@@ -1,19 +1,7 @@
 return {
     {
-        "jackMort/tide.nvim",
-        config = function()
-            require("tide").setup({
-                -- optional configuration
-            })
-        end,
-        requires = {
-            "MunifTanjim/nui.nvim",
-            "nvim-tree/nvim-web-devicons",
-        },
-    },
-    {
         "ThePrimeagen/harpoon",
-        enabled = false,
+        enabled = true,
         event = "VeryLazy",
         branch = "harpoon2",
         dependencies = { "nvim-lua/plenary.nvim" },
