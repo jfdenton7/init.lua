@@ -6,6 +6,12 @@ return {
         priority = 1000,
         enabled = true,
         config = function()
+            require("material").setup({
+                plugins = {
+                    "neogit",
+                },
+            })
+
             vim.g.material_style = "deep ocean"
             vim.cmd.colorscheme("material")
         end,
