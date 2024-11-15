@@ -26,6 +26,7 @@
   "material.nvim": { "branch": "main", "commit": "0bcabb582c31b750428af9dbb0d146c1c2d75d4c" },
   "mini.nvim": { "branch": "main", "commit": "7b4d5d48b6b5a75009d63f8f3e4ef4819b7e8139" },
   "minty": { "branch": "main", "commit": "1b604ed0d741294cfb56c0ce3aa6161e9ae7dd8b" },
+  "monoglow.nvim": { "branch": "main", "commit": "fe8b02d5be4ff30f721a9196e3003df6479e9f26" },
   "neogit": { "branch": "master", "commit": "97a39c836f27a691e8af79f36b134cf4aa18fee7" },
   "neotest": { "branch": "master", "commit": "6d3d22cdad49999ef774ebe1bc250a4994038964" },
   "neotest-go": { "branch": "main", "commit": "92950ad7be2ca02a41abca5c6600ff6ffaf5b5d6" },

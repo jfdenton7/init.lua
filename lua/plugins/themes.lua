@@ -1,6 +1,14 @@
 return {
     -- vim.cmd("highlight CustomCmpPicker guibg=#b4ebbc guifg=#212031 gui=bold")
     {
+        "wnkz/monoglow.nvim",
+        lazy = false,
+        priority = 1000,
+        config = function ()
+            
+        end
+    },
+    {
         "marko-cerovac/material.nvim",
         lazy = false,
         priority = 1000,
