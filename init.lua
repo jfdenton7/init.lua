@@ -4,6 +4,7 @@ vim.g.loaded_netrwPlugin = 1
 require("install")
 
 require("core.settings")
+require("core.extensions")
 
 require("lazy").setup({
     spec = {

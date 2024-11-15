@@ -65,9 +65,20 @@ return {
             local mini_git = require("mini.git")
             mini_git.setup()
 
-            vim.keymap.set({ "n", "v" }, "<leader>gi", function()
-                mini_git.show_at_cursor()
-            end)
+            -- vim.keymap.set({ "n", "v" }, "<leader>gi", function()
+            --     mini_git.show_at_cursor()
+            -- end)
+
+            vim.keymap.set({ "n" }, "<leader>gb", function()
+                vim.cmd("Git blame -- %")
+            end, { desc = "git blame file" })
+
+            vim.keymap.set({ "v", "x" }, "<leader>gb", function()
+                local start_line = vim.api.nvim_buf_get_mark(0, "<")[1]
+                local end_line = vim.api.nvim_buf_get_mark(0, ">")[1]
+
+                vim.cmd(string.format("Git blame -L %d,%d -- %%", start_line, end_line))
+            end, { desc = "git blame selection" })
 
             local mini_files = require("mini.files")
             mini_files.setup()
@@ -76,6 +87,12 @@ return {
                 mini_files.open(vim.api.nvim_buf_get_name(0))
             end
             vim.keymap.set("n", "<leader>N", mini_open)
+
+            require("mini.tabline").setup({
+                format = function()
+                    return ""
+                end,
+            })
 
             require("mini.bracketed").setup({
                 buffer = { suffix = "b", options = {} },

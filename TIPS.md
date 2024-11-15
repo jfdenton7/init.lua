@@ -4,6 +4,14 @@
 2. Select paragraph `vip`
 3. Use `g<C-a>`
 
+### One offs
+
+- use `tcd` to change current tab's dir.
+
+### Diffview oditities
+
+Best to close the tab via `:tabc`
+
 ### G command
 
 read commands via `:help g`

@@ -1,6 +1,7 @@
 return {
     {
         "NeogitOrg/neogit",
+        enabled = false,
         dependencies = {
             "nvim-lua/plenary.nvim", -- required
             "sindrets/diffview.nvim", -- optional - Diff integration
@@ -20,23 +21,44 @@ return {
     {
         "sindrets/diffview.nvim",
         event = "VeryLazy",
+        enabled = false,
         keys = {
             {
-                "<leader>gt",
+                "<leader>dd",
                 function()
-                    if vim.g._diffview_open then -- close it
-                        vim.cmd("DiffviewClose")
-                        vim.g._diffview_open = false
-                    else -- then open it
-                        vim.cmd("DiffviewOpen")
-                        vim.g._diffview_open = true
-                    end
+                    vim.cmd("DiffviewOpen")
                 end,
                 desc = "diffview: toggle",
+            },
+            {
+                "<leader>di",
+                mode = { "n" },
+                function()
+                    local commit_hash = vim.fn.expand("<cword>")
+                    if commit_hash ~= "" then
+                        vim.cmd(string.format("DiffviewOpen %s~1..%s", commit_hash, commit_hash))
+                    end
+                end,
+                desc = "diffview inspect commit",
             },
         },
         config = function()
             vim.g._diffview_open = false
+
+            local augroup = vim.api.nvim_create_augroup("CustomDiffviewKeymaps", { clear = true })
+            vim.api.nvim_create_autocmd("FileType", {
+                group = augroup,
+                pattern = "DiffviewFiles",
+                callback = function()
+                    vim.keymap.set("n", "<leader>q", function()
+                        local ft = vim.bo.filetype
+                        if ft == "DiffviewFiles" then
+                            vim.cmd("tabc")
+                        end
+                    end, { desc = "close diffview", buffer = true })
+                end,
+            })
+
             require("diffview").setup()
         end,
     },
@@ -59,6 +81,7 @@ return {
     },
     {
         "pwntester/octo.nvim",
+        enabled = false,
         event = "VeryLazy",
         dependencies = {
             "nvim-lua/plenary.nvim",

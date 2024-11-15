@@ -28,7 +28,15 @@ return {
                         "target",
                     },
                 },
-                pickers = {},
+                pickers = {
+                    buffers = {
+                        mappings = {
+                            i = {
+                                ["<c-d>"] = require("telescope.actions").delete_buffer,
+                            },
+                        },
+                    },
+                },
                 extensions = {
                     fzf = {
                         fuzzy = true, -- false will only do exact matching
@@ -114,31 +122,51 @@ return {
 
             vim.keymap.set("n", "gI", function()
                 builtins.lsp_implementations(
-                    themes.get_cursor({ layout_config = { width = 110 }, path_display = { "truncate" } })
+                    vim.tbl_extend(
+                        "force",
+                        themes.get_cursor({ layout_config = { width = 0.8 }, path_display = { "truncate" } }),
+                        { show_line = false }
+                    )
                 )
             end, { desc = "telescope: go to lsp_implementations" })
 
             vim.keymap.set("n", "gi", function()
                 builtins.lsp_incoming_calls(
-                    themes.get_cursor({ layout_config = { width = 110 }, path_display = { "truncate" } })
+                    vim.tbl_extend(
+                        "force",
+                        themes.get_cursor({ layout_config = { width = 0.8 }, path_display = { "truncate" } }),
+                        { show_line = false }
+                    )
                 )
             end, { desc = "telescope: go to lsp_incoming_calls" })
 
             vim.keymap.set("n", "go", function()
                 builtins.lsp_outgoing_calls(
-                    themes.get_cursor({ layout_config = { width = 110 }, path_display = { "truncate" } })
+                    vim.tbl_extend(
+                        "force",
+                        themes.get_cursor({ layout_config = { width = 0.8 }, path_display = { "truncate" } }),
+                        { show_line = false }
+                    )
                 )
             end, { desc = "telescope: go to lsp_outgoing_calls" })
 
             vim.keymap.set("n", "gd", function()
                 builtins.lsp_definitions(
-                    themes.get_cursor({ layout_config = { width = 110 }, path_display = { "truncate" } })
+                    vim.tbl_extend(
+                        "force",
+                        themes.get_cursor({ layout_config = { width = 0.8 }, path_display = { "truncate" } }),
+                        { show_line = false }
+                    )
                 )
             end, { desc = "telescope: go to lsp_definitions" })
 
             vim.keymap.set("n", "gr", function()
                 builtins.lsp_references(
-                    themes.get_cursor({ layout_config = { width = 110 }, path_display = { "truncate" } })
+                    vim.tbl_extend(
+                        "force",
+                        themes.get_cursor({ layout_config = { width = 0.8 }, path_display = { "truncate" } }),
+                        { show_line = false }
+                    )
                 )
             end, { desc = "telescope: go to lsp_references" })
         end,

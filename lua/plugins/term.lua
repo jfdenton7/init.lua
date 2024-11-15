@@ -25,7 +25,7 @@ return {
             })
             vim.keymap.set("n", "<leader>pr", function()
                 repl:toggle(30)
-            end, {desc="open python repl"})
+            end, { desc = "open python repl" })
 
             local task = Terminal:new({
                 cmd = "task",
@@ -87,35 +87,56 @@ return {
                 marks:toggle(15)
             end, { desc = "Term: open marks cli" })
 
-            -- local lazygit = Terminal:new({
-            --     cmd = "lazygit",
-            --     dir = "git_dir",
-            --     direction = "float",
-            --     float_opts = {
-            --         border = "double",
-            --     },
-            --     -- function to run on opening the terminal
-            --     on_open = function(term)
-            --         vim.cmd("startinsert!")
-            --         vim.api.nvim_buf_set_keymap(
-            --             term.bufnr,
-            --             "n",
-            --             "q",
-            --             "<cmd>close<CR>",
-            --             { noremap = true, silent = true }
-            --         )
-            --     end,
-            --     -- function to run on closing the terminal
-            --     on_close = function(term)
-            --         vim.cmd("startinsert!")
-            --     end,
-            -- })
-            --
-            -- local lazygit_toggle = function()
-            --     lazygit:toggle()
-            -- end
-            --
-            -- vim.keymap.set("n", "<leader>gg", lazygit_toggle, { desc = "ToggleTerm: lazygit toggle" })
+            local lazygit = Terminal:new({
+                cmd = "lazygit",
+                dir = "git_dir",
+                direction = "float",
+                float_opts = {
+                    border = "double",
+                },
+                -- function to run on opening the terminal
+                on_open = function(term)
+                    vim.cmd("startinsert!")
+                    vim.keymap.set("n", "q", function()
+                        vim.cmd("close")
+                    end, { buffer = term.bufnr, desc = "toggle term closed" })
+                end,
+                -- function to run on closing the terminal
+                on_close = function(term)
+                    vim.cmd("startinsert!")
+                end,
+            })
+
+            local lazygit_toggle = function()
+                lazygit:toggle()
+            end
+
+            local lazyhistory_toggle = function()
+                local history = Terminal:new({
+                    cmd = string.format("lazygit log --filter %s", vim.fn.expand("%:.")),
+                    dir = "git_dir",
+                    direction = "float",
+                    float_opts = {
+                        border = "double",
+                    },
+                    -- function to run on opening the terminal
+                    on_open = function(term)
+                        vim.cmd("startinsert!")
+                        vim.keymap.set("i", "q", function()
+                            vim.cmd("close")
+                        end, { buffer = term.bufnr })
+                    end,
+                    -- function to run on closing the terminal
+                    on_close = function(term)
+                        vim.cmd("startinsert!")
+                    end,
+                })
+
+                history:toggle()
+            end
+
+            vim.keymap.set("n", "<leader>gh", lazyhistory_toggle, { desc = "ToggleTerm: lazygit history for file" })
+            vim.keymap.set("n", "<leader>gg", lazygit_toggle, { desc = "ToggleTerm: lazygit toggle" })
 
             vim.keymap.set("v", "<leader>ts", function()
                 require("toggleterm").send_lines_to_terminal("single_line", trim_spaces, { args = vim.v.count })

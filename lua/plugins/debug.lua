@@ -216,7 +216,7 @@ return {
             -- TODO: can also add reverse continue...
             keymap("n", "<leader>q", function()
                 dap.terminate()
-            end)
+            end, { desc = "DAP: end session" })
 
             keymap("n", "<leader>n", function()
                 dap.continue()
