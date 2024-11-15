@@ -4,15 +4,16 @@ return {
         "wnkz/monoglow.nvim",
         lazy = false,
         priority = 1000,
-        config = function ()
-            
-        end
+        enabled = true,
+        config = function()
+            vim.cmd.colorscheme("monoglow-z")
+        end,
     },
     {
         "marko-cerovac/material.nvim",
         lazy = false,
         priority = 1000,
-        enabled = true,
+        enabled = false,
         config = function()
             require("material").setup({
                 plugins = {
