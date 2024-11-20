@@ -35,8 +35,7 @@ return {
             mini_diff.setup({
                 view = {
                     style = "sign",
-                    -- add sign options: ┃
-                    signs = { add = "+", change = "~", delete = "-" },
+                    signs = { add = "│", change = "│", delete = "│" },
                     priority = 10,
                 },
                 mappings = {
