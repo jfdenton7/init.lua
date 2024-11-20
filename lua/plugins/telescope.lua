@@ -122,51 +122,31 @@ return {
 
             vim.keymap.set("n", "gI", function()
                 builtins.lsp_implementations(
-                    vim.tbl_extend(
-                        "force",
-                        themes.get_cursor({ layout_config = { width = 0.8 }, path_display = { "truncate" } }),
-                        { show_line = false }
-                    )
+                    vim.tbl_extend("force", themes.get_ivy({ path_display = { "truncate" } }), { show_line = false })
                 )
             end, { desc = "telescope: go to lsp_implementations" })
 
             vim.keymap.set("n", "gi", function()
                 builtins.lsp_incoming_calls(
-                    vim.tbl_extend(
-                        "force",
-                        themes.get_cursor({ layout_config = { width = 0.8 }, path_display = { "truncate" } }),
-                        { show_line = false }
-                    )
+                    vim.tbl_extend("force", themes.get_ivy({ path_display = { "truncate" } }), { show_line = false })
                 )
             end, { desc = "telescope: go to lsp_incoming_calls" })
 
             vim.keymap.set("n", "go", function()
                 builtins.lsp_outgoing_calls(
-                    vim.tbl_extend(
-                        "force",
-                        themes.get_cursor({ layout_config = { width = 0.8 }, path_display = { "truncate" } }),
-                        { show_line = false }
-                    )
+                    vim.tbl_extend("force", themes.get_ivy({ path_display = { "truncate" } }), { show_line = false })
                 )
             end, { desc = "telescope: go to lsp_outgoing_calls" })
 
             vim.keymap.set("n", "gd", function()
                 builtins.lsp_definitions(
-                    vim.tbl_extend(
-                        "force",
-                        themes.get_cursor({ layout_config = { width = 0.8 }, path_display = { "truncate" } }),
-                        { show_line = false }
-                    )
+                    vim.tbl_extend("force", themes.get_ivy({ path_display = { "truncate" } }), { show_line = false })
                 )
             end, { desc = "telescope: go to lsp_definitions" })
 
             vim.keymap.set("n", "gr", function()
                 builtins.lsp_references(
-                    vim.tbl_extend(
-                        "force",
-                        themes.get_cursor({ layout_config = { width = 0.8 }, path_display = { "truncate" } }),
-                        { show_line = false }
-                    )
+                    vim.tbl_extend("force", themes.get_ivy({ path_display = { "truncate" } }), { show_line = false })
                 )
             end, { desc = "telescope: go to lsp_references" })
         end,
