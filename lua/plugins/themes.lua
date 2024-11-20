@@ -1,12 +1,12 @@
 return {
     -- vim.cmd("highlight CustomCmpPicker guibg=#b4ebbc guifg=#212031 gui=bold")
     {
-        "wnkz/monoglow.nvim",
-        lazy = false,
-        priority = 1000,
+        "rose-pine/neovim",
+        name = "rose-pine",
         enabled = true,
+        priority = 1000,
         config = function()
-            vim.cmd.colorscheme("monoglow-z")
+            vim.cmd.colorscheme("rose-pine-main")
         end,
     },
     {
@@ -68,38 +68,6 @@ return {
                 end,
             })
             vim.cmd.colorscheme("tokyonight")
-        end,
-    },
-    {
-        "EdenEast/nightfox.nvim",
-        enabled = false,
-        priority = 1000,
-        config = function()
-            require("nightfox").setup({
-                palettes = {
-                    terafox = {
-                        bg0 = "#00090B",
-                        bg1 = "#001114", -- #00171C
-                        blue = { base = "#80C1CA", bright = "#A5D3D9", dim = "#5EB0BB" },
-                    },
-                },
-                groups = {
-                    terafox = {
-                        Pmenu = {
-                            bg = "#0a1214",
-                        },
-                        PmenuSel = {
-                            bg = "#aaf3b5",
-                            fg = "#212031",
-                        },
-                        CursorLine = {
-                            bg = "#002429",
-                        },
-                    },
-                },
-            })
-
-            vim.cmd.colorscheme("terafox")
         end,
     },
     {

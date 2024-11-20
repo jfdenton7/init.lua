@@ -92,7 +92,7 @@ return {
                 dir = "git_dir",
                 direction = "float",
                 float_opts = {
-                    border = "double",
+                    border = "single",
                 },
                 -- function to run on opening the terminal
                 on_open = function(term)
@@ -117,7 +117,7 @@ return {
                     dir = "git_dir",
                     direction = "float",
                     float_opts = {
-                        border = "double",
+                        border = "single",
                     },
                     -- function to run on opening the terminal
                     on_open = function(term)
@@ -135,6 +135,31 @@ return {
                 history:toggle()
             end
 
+            local yazi = Terminal:new({
+                cmd = "yazi",
+                -- dir = "git_dir",
+                direction = "float",
+                float_opts = {
+                    border = "single",
+                },
+                -- function to run on opening the terminal
+                on_open = function(term)
+                    vim.cmd("startinsert!")
+                    vim.keymap.set("n", "q", function()
+                        vim.cmd("close")
+                    end, { buffer = term.bufnr, desc = "toggle term closed" })
+                end,
+                -- function to run on closing the terminal
+                on_close = function(term)
+                    vim.cmd("startinsert!")
+                end,
+            })
+
+            local yazi_toggle = function()
+                yazi:toggle()
+            end
+
+            vim.keymap.set("n", "<leader>N", yazi_toggle, { desc = "ToggleTerm: yazi file explorer" })
             vim.keymap.set("n", "<leader>gh", lazyhistory_toggle, { desc = "ToggleTerm: lazygit history for file" })
             vim.keymap.set("n", "<leader>gg", lazygit_toggle, { desc = "ToggleTerm: lazygit toggle" })
 
