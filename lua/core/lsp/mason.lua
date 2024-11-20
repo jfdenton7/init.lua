@@ -8,7 +8,7 @@ local handlers = {
     ["textDocument/publishDiagnostics"] = vim.lsp.with(vim.lsp.diagnostic.on_publish_diagnostics, {
         border = ui.rounded_border(),
         -- Disable virtual_text
-        -- virtual_text = false,
+        virtual_text = false,
     }),
 }
 

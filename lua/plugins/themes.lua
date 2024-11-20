@@ -3,7 +3,7 @@ return {
     {
         "rose-pine/neovim",
         name = "rose-pine",
-        enabled = true,
+        enabled = false,
         priority = 1000,
         config = function()
             vim.cmd.colorscheme("rose-pine-main")
@@ -13,7 +13,7 @@ return {
         "marko-cerovac/material.nvim",
         lazy = false,
         priority = 1000,
-        enabled = false,
+        enabled = true,
         config = function()
             require("material").setup({
                 plugins = {
