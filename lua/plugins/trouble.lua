@@ -70,28 +70,7 @@ return {
                             zindex = 200,
                         },
                     },
-                    diagnostics = {
-                        focus = true,
-                        filter = { buf = 0 },
-                        win = {
-                            type = "float",
-                            relative = "editor",
-                            border = "rounded",
-                            position = { 0, 1 },
-                            size = { width = 0.5, height = 0.4 },
-                            zindex = 200,
-
-                            -- type = "split",
-                            -- size = 0.3,
-                            -- position = "bottom",
-                            -- type = "float",
-                            -- relative = "editor",
-                            -- border = "rounded",
-                            -- position = { 0.5, 0.5 },
-                            -- size = { width = 0.5, height = 0.4 },
-                            -- zindex = 200,
-                        },
-                    },
+                    diagnostics = {},
                     symbols = {
                         focus = true,
                         win = {
@@ -170,9 +149,9 @@ return {
                 trouble.open("symbols")
             end, { desc = "trouble: show symbols" })
 
-            -- vim.keymap.set("n", "<leader>fe", function()
-            --     trouble.open("diagnostics")
-            -- end, { desc = "trouble: show diagnostics" })
+            vim.keymap.set("n", "<leader>fE", function()
+                trouble.open("diagnostics")
+            end, { desc = "trouble: show diagnostics" })
 
             -- vim.keymap.set("n", "]]", function()
             --     trouble.next("diagnostics")
