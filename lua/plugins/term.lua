@@ -135,27 +135,27 @@ return {
                 history:toggle()
             end
 
-            local yazi = Terminal:new({
-                cmd = "yazi",
-                -- dir = "git_dir",
-                direction = "float",
-                float_opts = {
-                    border = "single",
-                },
-                -- function to run on opening the terminal
-                on_open = function(term)
-                    vim.cmd("startinsert!")
-                    vim.keymap.set("n", "q", function()
-                        vim.cmd("close")
-                    end, { buffer = term.bufnr, desc = "toggle term closed" })
-                end,
-                -- function to run on closing the terminal
-                on_close = function(term)
-                    vim.cmd("startinsert!")
-                end,
-            })
-
             local yazi_toggle = function()
+                local yazi = Terminal:new({
+                    cmd = string.format("yazi %s", vim.fn.expand("%:h")),
+                    -- dir = "git_dir",
+                    direction = "float",
+                    float_opts = {
+                        border = "single",
+                    },
+                    -- function to run on opening the terminal
+                    on_open = function(term)
+                        vim.cmd("startinsert!")
+                        vim.keymap.set("n", "q", function()
+                            vim.cmd("close")
+                        end, { buffer = term.bufnr, desc = "toggle term closed" })
+                    end,
+                    -- function to run on closing the terminal
+                    on_close = function(term)
+                        vim.cmd("startinsert!")
+                    end,
+                })
+
                 yazi:toggle()
             end
 

@@ -36,7 +36,7 @@ return {
                 view = {
                     style = "sign",
                     signs = { add = "│", change = "│", delete = "│" },
-                    priority = 10,
+                    priority = 0,
                 },
                 mappings = {
                     -- Apply hunks inside a visual/operator region

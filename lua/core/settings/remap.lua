@@ -51,8 +51,17 @@ local windows = function()
 end
 
 local custom = function()
-    local scratch = require("core.extensions.buffers")
+    -- local scratch = require("core.extensions.buffers")
     -- set("n", "<leader>tl", scratch.toggle_tasks_buffer, { desc = "open scratch markdown split" })
+    set({ "n" }, "<leader>cp", function()
+        local path = vim.fn.expand("%:.")
+        vim.fn.setreg("*", path)
+    end, { desc = "copy current buffer's relative file path" })
+
+    set({ "n" }, "<leader>cpa", function()
+        local path = vim.fn.expand("%:p")
+        vim.fn.setreg('*', path)
+    end, { desc = "copy current buffer's absolute file path" })
 
     -- simple zen mode
     -- TODO: fix zen with telescope buffers, may need to create auto command group?

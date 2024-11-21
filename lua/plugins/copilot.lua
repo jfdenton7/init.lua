@@ -25,7 +25,7 @@ return {
 
                     vim.keymap.set("n", "<leader>ct", toggle_copilot, { desc = "Copilot: toggle" })
 
-                    vim.keymap.set("n", "<leader>cp", "<cmd>Copilot panel<cr>", { desc = "Copilot: open panel" })
+                    -- vim.keymap.set("n", "<leader>cp", "<cmd>Copilot panel<cr>", { desc = "Copilot: open panel" })
                     vim.keymap.set("i", "<C-J>", 'copilot#Accept("\\<CR>")', {
                         expr = true,
                         replace_keycodes = false,

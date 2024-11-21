@@ -1,7 +1,7 @@
 return {
     {
         "nvim-telescope/telescope.nvim",
-        tag = "0.1.7",
+        tag = "0.1.8",
         -- or                              , branch = '0.1.x',
         event = "VeryLazy",
         dependencies = {
@@ -69,7 +69,7 @@ return {
             local _ = require("core.extensions.telescope").actions()
 
             vim.keymap.set("n", "<leader>ff", function()
-                builtins.find_files()
+                builtins.find_files({ path_display = { "truncate" } })
             end, {})
 
             vim.keymap.set("n", "<leader>fg", function()
@@ -85,7 +85,7 @@ return {
             end, {})
 
             vim.keymap.set("n", "<leader>fi", function()
-                builtins.current_buffer_fuzzy_find(no_preview)
+                builtins.current_buffer_fuzzy_find()
             end, {})
 
             vim.keymap.set("n", "<localleader>ss", function()
@@ -140,7 +140,11 @@ return {
 
             vim.keymap.set("n", "gd", function()
                 builtins.lsp_definitions(
-                    vim.tbl_extend("force", themes.get_ivy({ path_display = { "truncate" } }), { show_line = false })
+                    vim.tbl_extend(
+                        "force",
+                        themes.get_ivy({ path_display = { "truncate" } }),
+                        { show_line = false, include_declaration = false }
+                    )
                 )
             end, { desc = "telescope: go to lsp_definitions" })
 
