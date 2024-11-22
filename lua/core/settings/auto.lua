@@ -60,6 +60,7 @@ local severity_to_priority = function(severity)
 end
 
 local MAX_DIAGNOSTICS = 3
+local SPACES = 4
 
 --- @return table<number, vim.Diagnostic>
 local collect_surrounding_diagnostics = function()
@@ -84,6 +85,23 @@ local collect_surrounding_diagnostics = function()
     return { unpack(diagnostics, 1, MAX_DIAGNOSTICS) }
 end
 
+local signs = require("core.ui.symbols").lsp_signs()
+
+--- @param diagnostic vim.Diagnostic
+--- @param spaces integer number of spaces to prefix
+--- @return string
+local format_diagnostic = function(diagnostic, spaces)
+    local symbols = {
+        [vim.diagnostic.severity.ERROR] = signs.Error,
+        [vim.diagnostic.severity.WARN] = signs.Warn,
+        [vim.diagnostic.severity.HINT] = signs.Hint,
+        [vim.diagnostic.severity.INFO] = signs.Info,
+    }
+
+    local message = vim.split(diagnostic.message, "\n")[1]
+    return string.format("%s%s %s", string.rep(" ", spaces), symbols[diagnostic.severity], message)
+end
+
 local show_virtual_text_diagnostics = function()
     if not vim.g._user_virtual_text_ns then
         vim.g._user_virtual_text_ns = vim.api.nvim_create_namespace("user_virtual_text")
@@ -97,7 +115,9 @@ local show_virtual_text_diagnostics = function()
 
     for _, diagnostic in ipairs(diagnostics) do
         vim.api.nvim_buf_set_extmark(bufnr, vim.g._user_virtual_text_ns, diagnostic.lnum, 0, {
-            virt_text = { { diagnostic.message, "Diagnostic" .. severity_to_string(diagnostic.severity) } },
+            virt_text = {
+                { format_diagnostic(diagnostic, SPACES), "Diagnostic" .. severity_to_string(diagnostic.severity) },
+            },
             virt_text_pos = "eol",
         })
     end

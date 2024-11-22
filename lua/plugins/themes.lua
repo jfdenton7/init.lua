@@ -6,7 +6,13 @@ return {
         priority = 1000,
         enabled = true,
         config = function()
+            vim.g.material_style = "deep ocean"
+            local colors = require("material.colors")
+
             require("material").setup({
+                custom_highlights = {
+                    Pmenu = { bg = colors.editor.bg },
+                },
                 plugins = {
                     "trouble",
                     "telescope",
@@ -18,7 +24,6 @@ return {
                 },
             })
 
-            vim.g.material_style = "deep ocean"
             vim.cmd.colorscheme("material")
         end,
     },

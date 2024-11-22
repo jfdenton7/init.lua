@@ -159,7 +159,8 @@ return {
                 yazi:toggle()
             end
 
-            vim.keymap.set("n", "<leader>N", yazi_toggle, { desc = "ToggleTerm: yazi file explorer" })
+            vim.keymap.set("n", "<leader>M", yazi_toggle, { desc = "ToggleTerm: yazi file explorer" })
+
             vim.keymap.set("n", "<leader>gh", lazyhistory_toggle, { desc = "ToggleTerm: lazygit history for file" })
             vim.keymap.set("n", "<leader>gg", lazygit_toggle, { desc = "ToggleTerm: lazygit toggle" })
 
