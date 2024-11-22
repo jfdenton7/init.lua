@@ -1,7 +1,7 @@
 return {
     {
         "dhruvasagar/vim-table-mode",
-        event = "BufEnter",
+        ft = "md", -- only load on markdown
         config = function()
             vim.g.table_mode_corner = "|"
         end,

@@ -12,6 +12,7 @@ return {
             require("material").setup({
                 custom_highlights = {
                     Pmenu = { bg = colors.editor.bg },
+                    -- Folded = { bg = colors.editor.bg, fg = colors.editor.bg },
                 },
                 plugins = {
                     "trouble",
@@ -25,16 +26,6 @@ return {
             })
 
             vim.cmd.colorscheme("material")
-        end,
-    },
-    {
-        "tjdevries/colorbuddy.nvim",
-        enabled = true,
-        priority = 1000,
-        config = function()
-            -- vim.cmd.colorscheme("gruvbuddy")
-            -- require("themes.ziggy")
-            -- require("themes.synthwave")
         end,
     },
 }
