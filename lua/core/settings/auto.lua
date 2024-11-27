@@ -124,7 +124,7 @@ local show_virtual_text_diagnostics = function()
 end
 
 M.setup = function()
-    vim.api.nvim_create_autocmd({ "CursorHold", "CursorMoved", "CursorHoldI" }, {
+    vim.api.nvim_create_autocmd({ "DiagnosticChanged" }, {
         pattern = {
             "*.c",
             "*.h",
