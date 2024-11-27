@@ -15,7 +15,7 @@ end
 local FoldOptions = {}
 
 --- @type FoldOptions | nil
-local previous_fold_options = nil
+local user_fold_options = nil
 
 --- @return FoldOptions
 local current_fold_options = function()
@@ -199,7 +199,7 @@ local focus_marks = function()
     if vim.g.custom_focus_mode ~= nil and vim.g.custom_focus_mode then
         vim.cmd("normal zE")
         vim.g.custom_focus_mode = false
-        goto_fold_options(previous_fold_options)
+        goto_fold_options(user_fold_options)
 
         vim.keymap.del("n", "<tab>")
         vim.keymap.del("n", "<s-tab>")
@@ -223,7 +223,7 @@ local focus_marks = function()
     end, { desc = "go to previous mark" })
 
     --- save the previous fold options
-    previous_fold_options = current_fold_options()
+    user_fold_options = current_fold_options()
     goto_fold_options(manual_mode_fold_options())
     vim.cmd("normal zE")
 
@@ -247,7 +247,7 @@ local focus_diagnostics = function() -- should not be an autocmd, should be a us
     if vim.g.custom_focus_mode ~= nil and vim.g.custom_focus_mode then
         vim.cmd("normal zE")
         vim.g.custom_focus_mode = false
-        goto_fold_options(previous_fold_options)
+        goto_fold_options(user_fold_options)
 
         vim.keymap.del("n", "<tab>")
         vim.keymap.del("n", "<s-tab>")
@@ -263,7 +263,7 @@ local focus_diagnostics = function() -- should not be an autocmd, should be a us
     end, { desc = "go to previous diagnostic" })
 
     --- save the previous fold options
-    previous_fold_options = current_fold_options()
+    user_fold_options = current_fold_options()
     goto_fold_options(manual_mode_fold_options())
     vim.cmd("normal zE")
 
@@ -286,10 +286,10 @@ local focus_visual_selection = function()
     if vim.g.custom_focus_mode ~= nil and vim.g.custom_focus_mode then
         vim.cmd("normal zE")
         vim.g.custom_focus_mode = false
-        goto_fold_options(previous_fold_options)
+        goto_fold_options(user_fold_options)
         return
     end
-    previous_fold_options = current_fold_options()
+    user_fold_options = current_fold_options()
     goto_fold_options(manual_mode_fold_options())
     vim.cmd("normal zE")
 
@@ -348,10 +348,10 @@ local focus_diff = function()
     if vim.g.custom_focus_mode ~= nil and vim.g.custom_focus_mode then
         vim.cmd("normal zE")
         vim.g.custom_focus_mode = false
-        goto_fold_options(previous_fold_options)
+        goto_fold_options(user_fold_options)
         return
     end
-    previous_fold_options = current_fold_options()
+    user_fold_options = current_fold_options()
     goto_fold_options(manual_mode_fold_options())
     vim.cmd("normal zE")
 
