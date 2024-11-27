@@ -7,7 +7,65 @@ for i = 97, 122 do
     table.insert(local_marks, string.char(i))
 end
 
+--- @class FoldOptions
+--- @field foldminlines integer
+--- @field fillchars string
+--- @field foldtext string
+--- @field foldmethod string
+local FoldOptions = {}
+
+--- @type FoldOptions | nil
+local previous_fold_options = nil
+
+--- @return FoldOptions
+local current_fold_options = function()
+    return {
+        foldminlines = vim.wo.foldminlines,
+        fillchars = vim.wo.fillchars,
+        foldtext = vim.wo.foldtext,
+        foldmethod = vim.wo.foldmethod,
+    }
+end
+
+--- @return FoldOptions
+local manual_mode_fold_options = function()
+    return {
+        foldminlines = 0,
+        fillchars = (vim.o.fillchars ~= "" and vim.o.fillchars .. "," or "") .. "fold: ",
+        foldtext = 'v:lua.require("core.settings.commands").custom_folds_style()',
+        foldmethod = "manual",
+    }
+end
+
+--- @param fo FoldOptions | nil
+local goto_fold_options = function(fo)
+    if fo ~= nil then
+        vim.wo.foldminlines = fo.foldminlines
+        vim.wo.fillchars = fo.fillchars
+        vim.wo.foldtext = fo.foldtext
+        vim.wo.foldmethod = fo.foldmethod
+    end
+end
+
+-- TODO: add a vs mode that allows you to "mark" in memory sections that you want to focus on in the current file
+-- BUG: if I toggle focus and then go to another file, it complains about the foldmethod when trying to activate another set of folds...
+
+--- @return table<table<integer>>
+local visual_selection = function()
+    local visual_pos = vim.fn.getpos("v")
+    local visual_line = visual_pos[2]
+    local cursor_pos = vim.fn.getpos(".")
+    local cursor_line = cursor_pos[2]
+
+    if visual_line < cursor_line then
+        return { { math.max(1, visual_line - 1), cursor_line + 1 } }
+    else
+        return { { math.max(1, cursor_line - 1), visual_line + 1 } }
+    end
+end
+
 --- finds all buffer local marks in the current buffer
+--- @return table<integer>
 local find_marks = function()
     local positions = {}
     for _, mark in ipairs(local_marks) do
@@ -34,6 +92,39 @@ local find_diagnostics = function()
     end, diagnostics)
 
     return positions
+end
+
+--- @param ranges table<table<integer>>
+--- @return table<table<integer>>
+local find_folds_for_ranges = function(ranges)
+    if #ranges == 0 then
+        return {}
+    end
+
+    local bufnr = vim.api.nvim_get_current_buf()
+
+    --- @param a table<integer>
+    --- @param b table<integer>
+    table.sort(ranges, function(a, b)
+        return a[1] < b[1]
+    end)
+
+    local prev_range = ranges[1]
+    local folds = { { 1, prev_range[1] } }
+    ranges = { unpack(ranges, 2) }
+    for _, range in pairs(ranges) do
+        if prev_range[2] < range[1] then
+            table.insert(folds, { prev_range[2], range[1] })
+        end
+        prev_range = range
+    end
+
+    local last_line = vim.api.nvim_buf_line_count(bufnr)
+    if prev_range[2] < last_line then
+        table.insert(folds, { prev_range[2], last_line })
+    end
+
+    return folds
 end
 
 --- @param positions table<integer>
@@ -108,6 +199,7 @@ local focus_marks = function()
     if vim.g.custom_focus_mode ~= nil and vim.g.custom_focus_mode then
         vim.cmd("normal zE")
         vim.g.custom_focus_mode = false
+        goto_fold_options(previous_fold_options)
 
         vim.keymap.del("n", "<tab>")
         vim.keymap.del("n", "<s-tab>")
@@ -130,10 +222,9 @@ local focus_marks = function()
         vim.api.nvim_win_set_cursor(0, prev.pos)
     end, { desc = "go to previous mark" })
 
-    vim.wo.foldminlines = 0
-    vim.wo.fillchars = (vim.o.fillchars ~= "" and vim.o.fillchars .. "," or "") .. "fold: "
-    vim.wo.foldtext = 'v:lua.require("core.settings.commands").custom_folds_style()'
-    vim.wo.foldmethod = "manual"
+    --- save the previous fold options
+    previous_fold_options = current_fold_options()
+    goto_fold_options(manual_mode_fold_options())
     vim.cmd("normal zE")
 
     local marks = find_marks()
@@ -156,6 +247,7 @@ local focus_diagnostics = function() -- should not be an autocmd, should be a us
     if vim.g.custom_focus_mode ~= nil and vim.g.custom_focus_mode then
         vim.cmd("normal zE")
         vim.g.custom_focus_mode = false
+        goto_fold_options(previous_fold_options)
 
         vim.keymap.del("n", "<tab>")
         vim.keymap.del("n", "<s-tab>")
@@ -170,10 +262,9 @@ local focus_diagnostics = function() -- should not be an autocmd, should be a us
         vim.diagnostic.goto_prev({ float = false })
     end, { desc = "go to previous diagnostic" })
 
-    vim.wo.foldminlines = 0
-    vim.wo.fillchars = (vim.o.fillchars ~= "" and vim.o.fillchars .. "," or "") .. "fold: "
-    vim.wo.foldtext = 'v:lua.require("core.settings.commands").custom_folds_style()'
-    vim.wo.foldmethod = "manual"
+    --- save the previous fold options
+    previous_fold_options = current_fold_options()
+    goto_fold_options(manual_mode_fold_options())
     vim.cmd("normal zE")
 
     local diagnostics = find_diagnostics()
@@ -188,6 +279,32 @@ local focus_diagnostics = function() -- should not be an autocmd, should be a us
     end
 
     vim.notify("focused diagnostics", vim.log.levels.INFO, {})
+    vim.g.custom_focus_mode = true
+end
+
+local focus_visual_selection = function()
+    if vim.g.custom_focus_mode ~= nil and vim.g.custom_focus_mode then
+        vim.cmd("normal zE")
+        vim.g.custom_focus_mode = false
+        goto_fold_options(previous_fold_options)
+        return
+    end
+    previous_fold_options = current_fold_options()
+    goto_fold_options(manual_mode_fold_options())
+    vim.cmd("normal zE")
+
+    local vs = visual_selection()
+    if #vs == 0 then
+        vim.notify("unable to get visual selection", vim.log.levels.WARN, {})
+        return
+    end
+
+    local folds = find_folds_for_ranges(vs)
+    for _, fold in ipairs(folds) do
+        vim.cmd(string.format("%d,%dfold", fold[1], fold[2]))
+    end
+
+    vim.notify("focused visual selection", vim.log.levels.INFO, {})
     vim.g.custom_focus_mode = true
 end
 
@@ -207,6 +324,59 @@ M.setup = function()
     vim.keymap.set("n", "<leader>M", function()
         focus_marks()
     end, { desc = "focus marks" })
+
+    vim.api.nvim_create_user_command("FocusVisualSelection", focus_visual_selection, {})
+    vim.keymap.set({ "n", "v", "x" }, "<leader>v", focus_visual_selection, { desc = "focus visual selection" })
+end
+
+-- === FOR EXTENSIONS === --
+
+local find_diff_ranges = function()
+    local diffs = require("mini.diff").export("qf", { scope = "current" })
+
+    local ranges = {}
+    for _, diff in pairs(diffs) do
+        table.insert(ranges, { math.max(1, diff.lnum - 1), diff.end_lnum + 1 })
+    end
+
+    return ranges
+end
+
+-- NOTE: no need for <tab>, we just use ]c instead
+
+local focus_diff = function()
+    if vim.g.custom_focus_mode ~= nil and vim.g.custom_focus_mode then
+        vim.cmd("normal zE")
+        vim.g.custom_focus_mode = false
+        goto_fold_options(previous_fold_options)
+        return
+    end
+    previous_fold_options = current_fold_options()
+    goto_fold_options(manual_mode_fold_options())
+    vim.cmd("normal zE")
+
+    local diffs = find_diff_ranges()
+    if #diffs == 0 then
+        vim.notify("no diffs in current file", vim.log.levels.WARN, {})
+        return
+    end
+
+    local folds = find_folds_for_ranges(diffs)
+    for _, fold in ipairs(folds) do
+        vim.cmd(string.format("%d,%dfold", fold[1], fold[2]))
+    end
+
+    vim.notify("focused diffs", vim.log.levels.INFO, {})
+    vim.g.custom_focus_mode = true
+end
+
+--- @alias Extension "mini"
+
+--- @param extension Extension
+M.load = function(extension)
+    if extension == "mini" then
+        vim.keymap.set("n", "<leader>D", focus_diff, { desc = "focus diffs" })
+    end
 end
 
 return M

@@ -61,6 +61,8 @@ return {
                 mini_diff.toggle_overlay(0)
             end)
 
+            require("core.settings.commands").load("mini")
+
             local mini_git = require("mini.git")
             mini_git.setup()
 
