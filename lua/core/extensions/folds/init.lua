@@ -23,6 +23,21 @@ M.setup = function()
     )
     vim.keymap.set("n", "<localleader>vd", user.remove_user_range, { desc = "save visual selection for focus mode" })
     vim.keymap.set("n", "<localleader>vv", focus.user_ranges, { desc = "focus visual selection" })
+
+    vim.keymap.set("n", "<leader>td", focus.todos, { desc = "focus visual selection" })
+
+    vim.keymap.set("n", "<leader>fi", function()
+        if vim.g.custom_focus_mode == nil or not vim.g.custom_focus_mode then
+            vim.ui.input({
+                prompt = "Focus on buffer text",
+            }, function(input)
+                focus.text({ input })
+            end)
+        else
+            -- toggle off
+            focus.text({})
+        end
+    end, { desc = "focus visual selection" })
 end
 
 --- @alias Extension "mini"

@@ -1,5 +1,22 @@
 local M = {}
 
+local mrtables = require("core.extensions.folds.table")
+
+--- @param words table<string>
+--- @return table<integer>
+M.buffer_text = function(words)
+    local positions = {}
+    for _, word in ipairs(words) do
+        vim.cmd(string.format("vimgrep /%s/ %%", word))
+        local entries = vim.fn.getqflist()
+        local lines = vim.tbl_map(function(entry)
+            return entry.lnum
+        end, entries)
+        positions = mrtables.merge(positions, lines)
+    end
+    return positions
+end
+
 --- @return table<table<integer>>
 M.visual_selection = function()
     local visual_pos = vim.fn.getpos("v")
@@ -47,43 +64,6 @@ M.find_diagnostics = function()
     end, diagnostics)
 
     return positions
-end
-
-M.find_nearby_marks = function()
-    -- line , col
-    local cursor = vim.api.nvim_win_get_cursor(0)
-    -- get all marks and sort by position
-    local marks = {}
-    for _, mark in ipairs(local_marks) do
-        local pos = vim.api.nvim_buf_get_mark(0, mark)
-        if pos[1] > 0 then
-            table.insert(marks, {
-                mark = mark,
-                line = pos[1],
-                pos = pos,
-            })
-        end
-    end
-
-    if #marks == 0 then
-        return {}
-    end
-
-    table.sort(marks, function(a, b)
-        return a.line < b.line
-    end)
-
-    -- find which is closest to my cursor
-    local closest = 1
-    local distance = math.abs(cursor[1] - marks[1].line)
-    for i, mark in ipairs(marks) do
-        if distance > math.abs(cursor[1] - mark.line) then
-            closest = i
-            distance = math.abs(cursor[1] - mark.line)
-        end
-    end
-
-    return { marks, closest }
 end
 
 return M

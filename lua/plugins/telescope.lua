@@ -84,9 +84,9 @@ return {
                 builtins.marks()
             end, {})
 
-            vim.keymap.set("n", "<leader>fi", function()
-                builtins.current_buffer_fuzzy_find()
-            end, {})
+            -- vim.keymap.set("n", "<leader>fi", function()
+            --     builtins.current_buffer_fuzzy_find()
+            -- end, {})
 
             vim.keymap.set("n", "<localleader>ss", function()
                 builtins.spell_suggest(themes.get_cursor())

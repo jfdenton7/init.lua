@@ -10,10 +10,6 @@ M.user_ranges = function()
         vim.cmd("normal zE")
         vim.g.custom_focus_mode = false
         editor.set_fold_options("user")
-
-        -- TODO
-        -- vim.keymap.del("n", "<tab>")
-        -- vim.keymap.del("n", "<s-tab>")
         return
     end
 
@@ -34,32 +30,46 @@ M.user_ranges = function()
     vim.g.custom_focus_mode = true
 end
 
+--- @param text table<string>
+M.text = function(text)
+    if vim.g.custom_focus_mode ~= nil and vim.g.custom_focus_mode then
+        vim.cmd("normal zE")
+        vim.g.custom_focus_mode = false
+        editor.set_fold_options("user")
+        return
+    end
+
+    local matches = find.buffer_text(text)
+    if #matches == 0 then
+        vim.notify("no matches in buffer", vim.log.levels.WARN, {})
+        return
+    end
+
+    editor.set_fold_options("manual")
+    vim.cmd("normal zE")
+
+    local folds = generate.folds_for_positions(matches)
+    for _, fold in ipairs(folds) do
+        vim.cmd(string.format("%d,%dfold", fold[1], fold[2]))
+    end
+
+    vim.notify("focused matches", vim.log.levels.INFO, {})
+    vim.g.custom_focus_mode = true
+end
+
+--- @param words table<string>?
+M.todos = function(words)
+    words = words or { "TODO:", "NOTE:", "FIXME:", "BUG:" }
+    return M.text(words)
+end
+
 M.marks = function()
     if vim.g.custom_focus_mode ~= nil and vim.g.custom_focus_mode then
         vim.cmd("normal zE")
         vim.g.custom_focus_mode = false
         editor.set_fold_options("user")
-
-        vim.keymap.del("n", "<tab>")
-        vim.keymap.del("n", "<s-tab>")
         return
     end
-
-    vim.keymap.set("n", "<tab>", function()
-        local t = find.find_nearby_marks()
-        local marks = t[1]
-        local closest = t[2] -- 1, 2
-        local next = marks[(closest % #marks) + 1]
-        vim.api.nvim_win_set_cursor(0, next.pos)
-    end, { desc = "go to next mark" })
-
-    vim.keymap.set("n", "<s-tab>", function()
-        local t = find.find_nearby_marks()
-        local marks = t[1]
-        local closest = t[2]
-        local prev = marks[closest > 1 and closest - 1 or #marks]
-        vim.api.nvim_win_set_cursor(0, prev.pos)
-    end, { desc = "go to previous mark" })
 
     local marks = find.find_marks()
     if #marks == 0 then

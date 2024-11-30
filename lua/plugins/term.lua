@@ -40,7 +40,7 @@ return {
                 on_open = function(term)
                     vim.cmd("startinsert!")
                     vim.cmd("wincmd R")
-                    vim.api.nvim_win_set_width(term.window, 55)
+                    vim.api.nvim_win_set_width(term.window, 75)
                     vim.api.nvim_buf_set_keymap(
                         term.bufnr,
                         "n",
