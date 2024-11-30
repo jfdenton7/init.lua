@@ -124,7 +124,8 @@ local show_virtual_text_diagnostics = function()
 end
 
 M.setup = function()
-    vim.api.nvim_create_autocmd({ "DiagnosticChanged" }, {
+    --- TODO: unsure if this will get too laggy
+    vim.api.nvim_create_autocmd({ "DiagnosticChanged", "CursorMoved" }, {
         pattern = {
             "*.c",
             "*.h",
