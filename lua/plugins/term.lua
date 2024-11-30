@@ -30,22 +30,24 @@ return {
             local task = Terminal:new({
                 cmd = "task",
                 dir = "git_dir",
-                direction = "float",
-                float_opts = {
-                    border = "curved",
-                    width = 100,
-                    height = 22,
-                },
+                direction = "vertical",
+                -- float_opts = {
+                --     border = "curved",
+                --     width = 100,
+                --     height = 22,
+                -- },
                 -- function to run on opening the terminal
                 on_open = function(term)
                     vim.cmd("startinsert!")
-                    -- vim.api.nvim_buf_set_keymap(
-                    --     term.bufnr,
-                    --     "n",
-                    --     "q",
-                    --     "<cmd>close<CR>",
-                    --     { noremap = true, silent = true }
-                    -- )
+                    vim.cmd("wincmd R")
+                    vim.api.nvim_win_set_width(term.window, 55)
+                    vim.api.nvim_buf_set_keymap(
+                        term.bufnr,
+                        "n",
+                        "q",
+                        "<cmd>close<CR>",
+                        { noremap = true, silent = true }
+                    )
                 end,
                 -- function to run on closing the terminal
                 on_close = function(term)

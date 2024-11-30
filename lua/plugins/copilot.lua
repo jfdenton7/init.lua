@@ -38,9 +38,9 @@ return {
         opts = {
             debug = false, -- Enable debugging
             -- See Configuration section for rest
-            show_help = false,
+            show_help = true,
             window = {
-                layout = "replace",
+                layout = "float",
             },
             mappings = {
                 accept_diff = {
@@ -54,23 +54,14 @@ return {
             },
         },
         config = function(_, opts)
-            require("CopilotChat").setup(opts)
+            local chat = require("CopilotChat")
+            chat.setup(opts)
+
             vim.keymap.set("n", "<leader>com", function()
-                local bufnr = vim.api.nvim_get_current_buf()
-                local win = vim.api.nvim_get_current_win()
-                local win_width = vim.api.nvim_win_get_width(win)
-                local opened_win = vim.api.nvim_open_win(bufnr, true, {
-                    split = "left",
-                    win = 0,
-                    width = math.floor(0.30 * win_width),
+                chat.open({
+                    window = { layout = "float" },
+                    auto_follow_cursor = true,
                 })
-
-                vim.cmd("CopilotChatToggle")
-
-                local copilot_buffer = vim.api.nvim_win_get_buf(opened_win)
-                vim.keymap.set("n", "q", function()
-                    vim.api.nvim_win_close(opened_win, false)
-                end, { buffer = copilot_buffer })
             end, { desc = "copilot open menu" })
 
             vim.keymap.set({ "x" }, "<leader>coo", function()
