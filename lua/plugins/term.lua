@@ -12,7 +12,7 @@ return {
             local Terminal = require("toggleterm.terminal").Terminal
             local trim_spaces = true
 
-            vim.keymap.set("n", "<leader>to", "<cmd>ToggleTerm direction=float<cr>", { desc = "Term: open float" })
+            -- vim.keymap.set("n", "<leader>to", "<cmd>ToggleTerm direction=float<cr>", { desc = "Term: open float" })
 
             local repl = Terminal:new({
                 cmd = "python3",
