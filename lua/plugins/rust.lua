@@ -15,6 +15,10 @@ return {
                     on_attach = function(_, bufnr)
                         local buf_opts = { buffer = bufnr, silent = true }
 
+                        vim.diagnostic.config({
+                            virtual_text = false,
+                        })
+
                         local function toggle_inlay_hints()
                             vim.lsp.inlay_hint.enable(
                                 not vim.lsp.inlay_hint.is_enabled({ bufnr = bufnr }),
@@ -44,7 +48,7 @@ return {
                         --     vim.cmd.RustLsp({ "renderDiagnostic", "current" })
                         -- end, { desc = "Rust: open diagnostic" })
 
-                        vim.keymap.set("n", "<leader>E", function()
+                        vim.keymap.set("n", "<leader>!", function()
                             vim.cmd.RustLsp("explainError")
                         end, { desc = "Rust: explain error" })
                     end,
