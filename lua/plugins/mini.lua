@@ -9,7 +9,6 @@ return {
             require("mini.pairs").setup()
             require("mini.indentscope").setup({
                 -- symbol = "󰇙",
-                -- symbol = "│",
                 options = { try_as_border = true },
             })
             -- disable indentscope for specific files...
@@ -61,7 +60,7 @@ return {
                 mini_diff.toggle_overlay(0)
             end)
 
-            require("core.settings.commands").load("mini")
+            require("core.extensions.folds").load("mini")
 
             local mini_git = require("mini.git")
             mini_git.setup()
