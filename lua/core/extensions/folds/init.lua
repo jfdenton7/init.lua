@@ -5,15 +5,11 @@ M.setup = function()
 
     vim.api.nvim_create_user_command("FocusDiagnostics", focus.diagnostics, {})
 
-    vim.keymap.set("n", "<leader>E", function()
-        focus.diagnostics()
-    end, { desc = "focus diagnostics" })
+    vim.keymap.set("n", "<leader>E", focus.diagnostics, { desc = "focus diagnostics" })
 
     vim.api.nvim_create_user_command("FocusMarks", focus.marks, {})
 
-    vim.keymap.set("n", "<leader>M", function()
-        focus.marks()
-    end, { desc = "focus marks" })
+    vim.keymap.set("n", "<leader>M", focus.marks, { desc = "focus marks" })
 
     vim.api.nvim_create_user_command("FocusVisualSelection", focus.visual_selection, {})
     vim.keymap.set({ "n", "v", "x" }, "<leader>v", focus.visual_selection, { desc = "focus visual selection" })
