@@ -2,6 +2,7 @@ return {
     {
         "echasnovski/mini.nvim",
         version = false,
+        enabled = true,
         event = "VeryLazy",
         config = function()
             require("mini.notify").setup()

@@ -15,10 +15,6 @@ return {
                     on_attach = function(_, bufnr)
                         local buf_opts = { buffer = bufnr, silent = true }
 
-                        -- vim.diagnostic.config({
-                        --     virtual_text = false,
-                        -- })
-
                         local function toggle_inlay_hints()
                             vim.lsp.inlay_hint.enable(
                                 not vim.lsp.inlay_hint.is_enabled({ bufnr = bufnr }),

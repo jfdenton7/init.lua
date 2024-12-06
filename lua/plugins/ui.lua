@@ -1,6 +1,7 @@
 return {
     {
         "nvchad/minty",
+        enabled = true,
         lazy = true,
         event = "VeryLazy",
         dependencies = {
@@ -18,10 +19,12 @@ return {
     },
     {
         "stevearc/dressing.nvim",
+        enabled = true,
         opts = {},
     },
     {
         "folke/noice.nvim",
+        enabled = true,
         event = "VeryLazy",
         opts = {
             -- add any options here
@@ -50,7 +53,7 @@ return {
                     command_palette = true, -- position the cmdline and popupmenu together
                     long_message_to_split = true, -- long messages will be sent to a split
                     inc_rename = false, -- enables an input dialog for inc-rename.nvim
-                    lsp_doc_border = false, -- add a border to hover docs and signature help
+                    lsp_doc_border = true, -- add a border to hover docs and signature help
                 },
             })
         end,

@@ -1,7 +1,7 @@
 return {
     {
         "mistweaverco/kulala.nvim",
-        enabled = false,
+        enabled = true,
         config = function()
             -- Setup is required, even if you don't pass any options
             require("kulala").setup()

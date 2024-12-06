@@ -16,7 +16,7 @@ return {
         "marko-cerovac/material.nvim",
         lazy = false,
         priority = 1000,
-        enabled = false,
+        enabled = true,
         config = function()
             vim.g.material_style = "deep ocean"
             local colors = require("material.colors")
@@ -37,7 +37,7 @@ return {
                 },
             })
 
-            vim.cmd.colorscheme("material")
+            -- vim.cmd.colorscheme("material")
         end,
     },
 }

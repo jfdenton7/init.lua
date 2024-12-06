@@ -92,7 +92,7 @@ return {
                 dir = "git_dir",
                 direction = "float",
                 float_opts = {
-                    border = "single",
+                    border = "none",
                 },
                 -- function to run on opening the terminal
                 on_open = function(term)
@@ -117,7 +117,7 @@ return {
                     dir = "git_dir",
                     direction = "float",
                     float_opts = {
-                        border = "single",
+                        border = "none",
                     },
                     -- function to run on opening the terminal
                     on_open = function(term)
