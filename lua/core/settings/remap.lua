@@ -4,16 +4,16 @@ local opts = { noremap = true, silent = true }
 local M = {}
 
 local colors = function()
-    set("n", "<c-i>", function()
-        local res = vim.api.nvim_exec2("Inspect", { output = true })
-        local notify = require("mini.notify")
-        notify.clear()
-        local id = notify.add(res.output, "INFO", "Comment")
-        vim.fn.setreg("*", res.output)
-        vim.defer_fn(function()
-            notify.remove(id)
-        end, 30000)
-    end, { desc = "inspect element hl-groups" })
+    -- set("n", "<c-i>", function()
+    --     local res = vim.api.nvim_exec2("Inspect", { output = true })
+    --     local notify = require("mini.notify")
+    --     notify.clear()
+    --     local id = notify.add(res.output, "INFO", "Comment")
+    --     vim.fn.setreg("*", res.output)
+    --     vim.defer_fn(function()
+    --         notify.remove(id)
+    --     end, 30000)
+    -- end, { desc = "inspect element hl-groups" })
 end
 
 local movement = function()
