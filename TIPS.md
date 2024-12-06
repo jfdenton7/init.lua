@@ -45,3 +45,5 @@ Example connecting to mysql
 ```
 mysql://user:password@host:port/database
 ```
+
+HMM - vim.fn.matchadd(

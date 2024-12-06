@@ -12,8 +12,6 @@ return {
             local Terminal = require("toggleterm.terminal").Terminal
             local trim_spaces = true
 
-            vim.keymap.set("n", "<leader>to", "<cmd>ToggleTerm direction=float<cr>", { desc = "Term: open float" })
-
             local repl = Terminal:new({
                 cmd = "python3",
                 dir = "git_dir",
@@ -165,11 +163,10 @@ return {
                 Terminal:new({}):toggle(20, "vertical")
             end
 
+            vim.keymap.set("n", "<leader>to", empty, { desc = "Term: open float" })
             vim.keymap.set("n", "<leader>Y", yazi_toggle, { desc = "ToggleTerm: yazi file explorer" })
-
             vim.keymap.set("n", "<leader>gh", lazyhistory_toggle, { desc = "ToggleTerm: lazygit history for file" })
             vim.keymap.set("n", "<leader>gg", lazygit_toggle, { desc = "ToggleTerm: lazygit toggle" })
-
             vim.keymap.set("v", "<leader>ts", function()
                 require("toggleterm").send_lines_to_terminal("single_line", trim_spaces, { args = vim.v.count })
             end, { desc = "Term: send line to term" })

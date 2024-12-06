@@ -1,10 +1,22 @@
 return {
     -- vim.cmd("highlight CustomCmpPicker guibg=#b4ebbc guifg=#212031 gui=bold")
     {
+        "rktjmp/lush.nvim",
+        -- if you wish to use your own colorscheme:
+    },
+    {
+        dir = "/Users/jfdenton/.config/nvim/lua/themes/focus",
+        lazy = false,
+        priority = 1000,
+        config = function()
+            vim.cmd("colorscheme focus")
+        end,
+    },
+    {
         "marko-cerovac/material.nvim",
         lazy = false,
         priority = 1000,
-        enabled = true,
+        enabled = false,
         config = function()
             vim.g.material_style = "deep ocean"
             local colors = require("material.colors")

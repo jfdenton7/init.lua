@@ -3,6 +3,19 @@ local opts = { noremap = true, silent = true }
 
 local M = {}
 
+local colors = function()
+    set("n", "<c-i>", function()
+        local res = vim.api.nvim_exec2("Inspect", { output = true })
+        local notify = require("mini.notify")
+        notify.clear()
+        local id = notify.add(res.output, "INFO", "Comment")
+        vim.fn.setreg("*", res.output)
+        vim.defer_fn(function()
+            notify.remove(id)
+        end, 30000)
+    end, { desc = "inspect element hl-groups" })
+end
+
 local movement = function()
     set("n", "<c-y>", "<c-y><c-y><c-y>", { desc = "scroll up" })
     set("n", "<c-e>", "<c-e><c-e><c-e>", { desc = "scroll down" })
@@ -10,8 +23,8 @@ local movement = function()
     set({ "n", "x" }, "k", [[v:count == 0 ? 'gk' : 'k']], { expr = true })
     set({ "n", "x" }, "H", "^")
     set({ "n", "x" }, "L", "$")
-    set("n", "<C-u>", "<C-u>zz", opts)
-    set("n", "<C-d>", "<C-d>zz", opts)
+    set("n", "<C-u>", "8kzz", opts)
+    set("n", "<C-d>", "8jzz", opts)
 end
 
 local editing = function()
@@ -60,7 +73,7 @@ local custom = function()
 
     set({ "n" }, "<leader>cpa", function()
         local path = vim.fn.expand("%:p")
-        vim.fn.setreg('*', path)
+        vim.fn.setreg("*", path)
     end, { desc = "copy current buffer's absolute file path" })
 
     -- simple zen mode
@@ -86,6 +99,7 @@ local external = function()
 end
 
 M.setup = function()
+    colors()
     movement()
     editing()
     shortcuts()

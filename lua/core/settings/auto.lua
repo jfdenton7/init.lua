@@ -124,29 +124,29 @@ local show_virtual_text_diagnostics = function()
 end
 
 M.setup = function()
-    --- TODO: unsure if this will get too laggy
-    vim.api.nvim_create_autocmd({ "DiagnosticChanged", "CursorMoved" }, {
-        pattern = {
-            "*.c",
-            "*.h",
-            "*.ts",
-            "*.js",
-            "*.tsx",
-            "*.jsx",
-            "*.rs",
-            "*.go",
-            "*.py",
-            "*.css",
-            "*.scss",
-            "*.vue",
-            "*.html",
-            "*.json",
-            "*.java",
-            "*.lua",
-        },
-        callback = show_virtual_text_diagnostics,
-    })
-
+    -- TOOD: should revisit this and try something else... maybe a floating window of some kind?
+    -- vim.api.nvim_create_autocmd({ "DiagnosticChanged", "CursorMoved" }, {
+    --     pattern = {
+    --         "*.c",
+    --         "*.h",
+    --         "*.ts",
+    --         "*.js",
+    --         "*.tsx",
+    --         "*.jsx",
+    --         "*.rs",
+    --         "*.go",
+    --         "*.py",
+    --         "*.css",
+    --         "*.scss",
+    --         "*.vue",
+    --         "*.html",
+    --         "*.json",
+    --         "*.java",
+    --         "*.lua",
+    --     },
+    --     callback = show_virtual_text_diagnostics,
+    -- })
+    --
     vim.api.nvim_create_autocmd("RecordingEnter", {
         pattern = "*",
         callback = function()
@@ -172,7 +172,7 @@ M.setup = function()
     vim.api.nvim_create_autocmd({ "TextYankPost" }, {
         pattern = { "*" },
         callback = function()
-            vim.highlight.on_yank()
+            vim.highlight.on_yank({ higroup = "HighlightYank" })
         end,
         desc = "Highlight yanked text",
     })
