@@ -57,7 +57,7 @@ return {
             local chat = require("CopilotChat")
             chat.setup(opts)
 
-            vim.keymap.set("n", "<leader>com", function()
+            vim.keymap.set({ "n", "v" }, "<leader>com", function()
                 chat.open({
                     window = { layout = "float" },
                     auto_follow_cursor = true,

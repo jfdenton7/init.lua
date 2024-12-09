@@ -22,6 +22,8 @@ return {
                             )
                         end
 
+                        vim.diagnostic.config({ virtual_text = false })
+
                         vim.keymap.set("n", "<leader>ei", toggle_inlay_hints)
 
                         vim.keymap.set("n", "<leader>e", vim.diagnostic.open_float, buf_opts)

@@ -1,36 +1,3 @@
--- local set = vim.opt_local
-
---
--- -- Set local settings for terminal buffers
--- vim.api.nvim_create_autocmd("TermOpen", {
---     group = vim.api.nvim_create_augroup("custom-term-open", {}),
---     callback = function()
---         set.number = false
---         set.relativenumber = false
---         set.scrolloff = 0
---     end,
--- })
---
---
--- -- Open a terminal at the bottom of the screen with a fixed height.
--- vim.keymap.set("n", "<leader>t", function()
---     vim.cmd.new()
---     vim.cmd.wincmd "J"
---     vim.api.nvim_win_set_height(0, 12)
---     vim.wo.winfixheight = true
---     vim.cmd.term()
--- end)
---
-
--- You will likely want to reduce updatetime which affects CursorHold
--- note: this setting is global and should be set only once
--- vim.api.nvim_create_autocmd({ "CursorHold", "CursorHoldI" }, {
---   group = vim.api.nvim_create_augroup("float_diagnostic", { clear = true }),
---   callback = function ()
---     vim.diagnostic.open_float(nil, {focus=false})
---   end
--- })
-
 local M = {}
 
 --- Used for settings highlight groups
@@ -89,7 +56,7 @@ local signs = require("core.ui.symbols").lsp_signs()
 
 --- @param diagnostic vim.Diagnostic
 --- @param spaces integer number of spaces to prefix
---- @return string
+--- @return table
 local format_diagnostic = function(diagnostic, spaces)
     local symbols = {
         [vim.diagnostic.severity.ERROR] = signs.Error,
@@ -98,8 +65,20 @@ local format_diagnostic = function(diagnostic, spaces)
         [vim.diagnostic.severity.INFO] = signs.Info,
     }
 
-    local message = vim.split(diagnostic.message, "\n")[1]
-    return string.format("%s%s %s", string.rep(" ", spaces), symbols[diagnostic.severity], message)
+    local lines = {}
+    local message_lines = vim.split(diagnostic.message, "\n")
+    for i, message in ipairs(message_lines) do
+        local symbol
+        if i == 1 then
+            symbol = symbols[diagnostic.severity]
+        else
+            symbol = "│"
+        end
+        local msg = string.format("%s%s %s", string.rep(" ", spaces), symbol, message)
+        table.insert(lines, { { msg, "Diagnostic" .. severity_to_string(diagnostic.severity) } })
+    end
+
+    return lines
 end
 
 local show_virtual_text_diagnostics = function()
@@ -108,45 +87,52 @@ local show_virtual_text_diagnostics = function()
     end
 
     local bufnr = vim.api.nvim_get_current_buf()
+    local cursor_line = vim.api.nvim_win_get_cursor(0)[1] - 1 -- lines start at 0 (top)
     vim.api.nvim_buf_clear_namespace(bufnr, vim.g._user_virtual_text_ns, 0, -1)
 
     -- fetch diagnostics
-    local diagnostics = collect_surrounding_diagnostics()
-
-    for _, diagnostic in ipairs(diagnostics) do
-        vim.api.nvim_buf_set_extmark(bufnr, vim.g._user_virtual_text_ns, diagnostic.lnum, 0, {
-            virt_text = {
-                { format_diagnostic(diagnostic, SPACES), "Diagnostic" .. severity_to_string(diagnostic.severity) },
-            },
-            virt_text_pos = "eol",
-        })
+    local diagnostics = vim.diagnostic.get(bufnr, { lnum = cursor_line, severity = vim.diagnostic.severity.ERROR })
+    if #diagnostics == 0 then
+        return
     end
+    local virt_lines = {}
+    for _, diagnostic in ipairs(diagnostics) do
+        local lines = format_diagnostic(diagnostic, SPACES)
+        for _, line in ipairs(lines) do
+            table.insert(virt_lines, line)
+        end
+    end
+    local diagnostic = diagnostics[1]
+    vim.api.nvim_buf_set_extmark(bufnr, vim.g._user_virtual_text_ns, diagnostic.lnum, 0, {
+        virt_lines = virt_lines,
+        virt_text_pos = "eol",
+    })
 end
 
 M.setup = function()
     -- TOOD: should revisit this and try something else... maybe a floating window of some kind?
-    -- vim.api.nvim_create_autocmd({ "DiagnosticChanged", "CursorMoved" }, {
-    --     pattern = {
-    --         "*.c",
-    --         "*.h",
-    --         "*.ts",
-    --         "*.js",
-    --         "*.tsx",
-    --         "*.jsx",
-    --         "*.rs",
-    --         "*.go",
-    --         "*.py",
-    --         "*.css",
-    --         "*.scss",
-    --         "*.vue",
-    --         "*.html",
-    --         "*.json",
-    --         "*.java",
-    --         "*.lua",
-    --     },
-    --     callback = show_virtual_text_diagnostics,
-    -- })
-    --
+    vim.api.nvim_create_autocmd({ "DiagnosticChanged", "CursorMoved" }, {
+        pattern = {
+            "*.c",
+            "*.h",
+            "*.ts",
+            "*.js",
+            "*.tsx",
+            "*.jsx",
+            "*.rs",
+            "*.go",
+            "*.py",
+            "*.css",
+            "*.scss",
+            "*.vue",
+            "*.html",
+            "*.json",
+            "*.java",
+            "*.lua",
+        },
+        callback = show_virtual_text_diagnostics,
+    })
+
     vim.api.nvim_create_autocmd("RecordingEnter", {
         pattern = "*",
         callback = function()

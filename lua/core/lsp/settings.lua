@@ -7,6 +7,7 @@ M.capabilities = require("cmp_nvim_lsp").default_capabilities()
 
 -- client, buf id
 local function lsp_keymaps(_, bufnr)
+    local a
     local buf_opts = { buffer = bufnr, silent = true }
 
     -- errors
@@ -36,8 +37,12 @@ local function set_diagnostic_config()
         virtual_text = {
             spacing = 4,
             source = "if_many",
+            --- @param diagnostic vim.Diagnostic
             format = function(diagnostic)
                 local icon = ""
+                if diagnostic.code == "unused-local" or diagnostic.code == 6133 then
+                    icon = signs.HINT
+                end
                 if diagnostic.severity == vim.diagnostic.severity.ERROR then
                     icon = signs.Error
                 end
@@ -59,7 +64,7 @@ local function set_diagnostic_config()
             enable = true,
         },
         severity_sort = true,
-        underline = false,
+        underline = true,
         float = {
             -- style = 'minimal',
             border = "rounded",

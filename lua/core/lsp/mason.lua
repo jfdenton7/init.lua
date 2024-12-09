@@ -8,7 +8,8 @@ local handlers = {
     ["textDocument/publishDiagnostics"] = vim.lsp.with(vim.lsp.diagnostic.on_publish_diagnostics, {
         border = ui.rounded_border(),
         -- Disable virtual_text
-        virtual_text = true,
+        underline = true,
+        virtual_text = false,
     }),
 }
 
@@ -35,7 +36,7 @@ M.setup = function()
                 filetypes = (servers[server_name] or {}).filetypes,
             })
         end,
-        ["rust_analyzer"] = function() end,  -- rustaceanvim takes care of this
+        ["rust_analyzer"] = function() end, -- rustaceanvim takes care of this
     })
 end
 
