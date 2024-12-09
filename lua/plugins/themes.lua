@@ -5,7 +5,7 @@ return {
         -- if you wish to use your own colorscheme:
     },
     {
-        dir = "/Users/jfdenton/.config/nvim/lua/themes/focus",
+        dir = os.getenv("HOME") .. "/.config/nvim/lua/themes/focus",
         lazy = false,
         priority = 1000,
         config = function()
