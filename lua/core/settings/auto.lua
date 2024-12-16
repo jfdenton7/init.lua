@@ -27,6 +27,7 @@ local severity_to_priority = function(severity)
 end
 
 local MAX_DIAGNOSTICS = 3
+local MAX_DIAGNOSTIC_MSG_LENGTH = 80
 local SPACES = 4
 
 --- @return table<number, vim.Diagnostic>
@@ -65,9 +66,33 @@ local format_diagnostic = function(diagnostic, spaces)
         [vim.diagnostic.severity.INFO] = signs.Info,
     }
 
+    local diagnostic_split = vim.split(diagnostic.message, "\n")
+    --- @type string[]
+    local lines_limited = {}
+    for _, message in ipairs(diagnostic_split) do
+        if #message > MAX_DIAGNOSTIC_MSG_LENGTH then
+            local remaining = message
+            while #remaining > MAX_DIAGNOSTIC_MSG_LENGTH do
+                local pos = string.find(remaining, " ", MAX_DIAGNOSTIC_MSG_LENGTH)
+                if pos ~= nil then
+                    local limited = string.sub(remaining, 0, pos)
+                    table.insert(lines_limited, limited)
+                else
+                    -- no more whitespace could be found
+                    break
+                end
+                remaining = string.sub(remaining, pos)
+            end
+            if #remaining > 0 then
+                table.insert(lines_limited, remaining)
+            end
+        else
+            table.insert(lines_limited, message)
+        end
+    end
+
     local lines = {}
-    local message_lines = vim.split(diagnostic.message, "\n")
-    for i, message in ipairs(message_lines) do
+    for i, message in ipairs(lines_limited) do
         local symbol
         if i == 1 then
             symbol = symbols[diagnostic.severity]

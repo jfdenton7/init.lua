@@ -7,11 +7,13 @@ M.capabilities = require("cmp_nvim_lsp").default_capabilities()
 
 -- client, buf id
 local function lsp_keymaps(_, bufnr)
-    local a
     local buf_opts = { buffer = bufnr, silent = true }
 
     -- errors
     keymap("n", "<leader>e", vim.diagnostic.open_float, buf_opts)
+
+    -- inspection
+    -- keymap("i", "<c-i>", vim.lsp.buf.signature_help, { noremap = true })
     -- actions
     keymap("n", "<leader>rn", vim.lsp.buf.rename, buf_opts)
     keymap("n", "<leader>ra", vim.lsp.buf.code_action, buf_opts)
