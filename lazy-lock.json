@@ -24,6 +24,7 @@
   "material.nvim": { "branch": "main", "commit": "31429eef4b7233ebdae3ddb57b7165ee4f1bd653" },
   "mini.nvim": { "branch": "main", "commit": "73bbcbfa7839c4b00a64965fb504f87461abefbd" },
   "minty": { "branch": "main", "commit": "6dce9f097667862537823d515a0250ce58faab05" },
+  "neofusion.nvim": { "branch": "main", "commit": "dda53ebd18c72a1b403233e0835b3a88a9461e6e" },
   "neotest": { "branch": "master", "commit": "6d3d22cdad49999ef774ebe1bc250a4994038964" },
   "neotest-go": { "branch": "main", "commit": "92950ad7be2ca02a41abca5c6600ff6ffaf5b5d6" },
   "neotest-jest": { "branch": "main", "commit": "514fd4eae7da15fd409133086bb8e029b65ac43f" },

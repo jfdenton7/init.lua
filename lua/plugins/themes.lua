@@ -1,11 +1,19 @@
 return {
     -- vim.cmd("highlight CustomCmpPicker guibg=#b4ebbc guifg=#212031 gui=bold")
     {
+        "diegoulloao/neofusion.nvim",
+        priority = 1000,
+        config = function()
+            vim.cmd.colorscheme("neofusion")
+        end,
+    },
+    {
         "rktjmp/lush.nvim",
         -- if you wish to use your own colorscheme:
     },
     {
         dir = os.getenv("HOME") .. "/.config/nvim/lua/themes/focus",
+        enabled = false,
         lazy = false,
         priority = 1000,
         config = function()
