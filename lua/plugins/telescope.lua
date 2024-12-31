@@ -36,6 +36,13 @@ return {
                             },
                         },
                     },
+                    live_grep = {
+                        mappings = {
+                            i = {
+                                ["<c-f>"] = require("telescope.actions").to_fuzzy_refine,
+                            },
+                        },
+                    },
                 },
                 extensions = {
                     fzf = {
@@ -67,6 +74,10 @@ return {
 
             local builtins = require("telescope.builtin")
             local _ = require("core.extensions.telescope").actions()
+
+            vim.keymap.set("n", "<leader>fc", function()
+                builtins.git_status({ path_display = { "truncate" } })
+            end)
 
             vim.keymap.set("n", "<leader>ff", function()
                 builtins.find_files({ path_display = { "truncate" } })

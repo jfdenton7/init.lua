@@ -1,10 +1,21 @@
 return {
     -- vim.cmd("highlight CustomCmpPicker guibg=#b4ebbc guifg=#212031 gui=bold")
     {
-        "diegoulloao/neofusion.nvim",
+        "catppuccin/nvim",
+        name = "catppuccin",
+        enabled = true,
         priority = 1000,
+        lazy = false,
         config = function()
-            vim.cmd.colorscheme("neofusion")
+            require("catppuccin").setup({
+                custom_highlights = function(colors)
+                    return {
+                        MiniTablineTabpagesection = { fg = colors.green }, -- gui bold?
+                        HighlightYank = { bg = colors.peach },
+                    }
+                end,
+            })
+            vim.cmd.colorscheme("catppuccin")
         end,
     },
     {
@@ -24,7 +35,7 @@ return {
         "marko-cerovac/material.nvim",
         lazy = false,
         priority = 1000,
-        enabled = true,
+        enabled = false,
         config = function()
             vim.g.material_style = "deep ocean"
             local colors = require("material.colors")

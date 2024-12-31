@@ -1,17 +1,25 @@
 local M = {}
 
 local ui = require("core.ui.style")
--- LSP settings (for overriding per client)
-local handlers = {
-    ["textDocument/hover"] = vim.lsp.with(vim.lsp.handlers.hover, { border = ui.rounded_border() }),
-    ["textDocument/signatureHelp"] = vim.lsp.with(vim.lsp.handlers.signature_help, { border = ui.rounded_border() }),
-    ["textDocument/publishDiagnostics"] = vim.lsp.with(vim.lsp.diagnostic.on_publish_diagnostics, {
-        border = ui.rounded_border(),
-        -- Disable virtual_text
-        underline = true,
-        virtual_text = false,
-    }),
-}
+local custom_handlers = require("core.lsp.handlers")
+
+local handlers = function(server_name)
+    local default = {
+        ["textDocument/hover"] = vim.lsp.with(vim.lsp.handlers.hover, { border = ui.rounded_border() }),
+        ["textDocument/signatureHelp"] = vim.lsp.with(
+            vim.lsp.handlers.signature_help,
+            { border = ui.rounded_border() }
+        ),
+        ["textDocument/publishDiagnostics"] = vim.lsp.with(vim.lsp.diagnostic.on_publish_diagnostics, {
+            border = ui.rounded_border(),
+            -- Disable virtual_text
+            underline = true,
+            virtual_text = false,
+        }),
+    }
+
+    return vim.tbl_extend("force", default, custom_handlers[server_name] or {})
+end
 
 M.setup = function()
     require("mason").setup()
@@ -29,7 +37,7 @@ M.setup = function()
     mason_lspconfig.setup_handlers({
         function(server_name)
             require("lspconfig")[server_name].setup({
-                handlers = handlers,
+                handlers = handlers(server_name),
                 capabilities = settings.capabilities,
                 on_attach = settings.on_attach,
                 settings = servers[server_name],

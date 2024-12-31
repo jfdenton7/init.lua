@@ -21,4 +21,22 @@ M.branch_name = function()
     end
 end
 
+--- @return string path to git root
+M.root = function()
+    local job = vim.system({ "git", "rev-parse", "--show-toplevel" }, { text = true }):wait()
+    return vim.trim(job.stdout)
+end
+
+--- @param staged ?boolean
+--- @return string
+M.diffs = function(staged)
+    local job
+    if staged then
+        job = vim.system({ "git", "diff", "--cached" }, { text = true }):wait()
+    else
+        job = vim.system({ "git", "diff" }, { text = true }):wait()
+    end
+    return job.stdout
+end
+
 return M

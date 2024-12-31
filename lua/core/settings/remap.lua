@@ -3,6 +3,8 @@ local opts = { noremap = true, silent = true }
 
 local M = {}
 
+local diff = require("core.extensions.diff")
+
 local colors = function()
     set("n", "<localleader>i", function()
         local res = vim.api.nvim_exec2("Inspect", { output = true })
@@ -38,6 +40,9 @@ local editing = function()
     -- - Paste in Visual with `P` to not copy selected text (`:h v_P`)
     set("x", "gp", '"+P', { desc = "Paste from system clipboard" })
 
+    set({ "v", "x" }, "<leader><leader>", function()
+        diff.selection_with_last_yank()
+    end, { desc = "diff: selection with last yank" })
     -- local next_word_by_camel_case = function()
     --     -- TODO: figure out why this won't stop hi
     --     local parsed = vim.api.nvim_replace_termcodes("/\\u<cr><esc>", true, false, true)
