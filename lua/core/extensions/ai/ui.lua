@@ -11,6 +11,8 @@ local themes = require("telescope.themes")
 local actions = require("telescope.actions")
 local action_state = require("telescope.actions.state")
 
+local git = require("core.extensions.git")
+
 local focused = themes.get_dropdown({
     winblend = 0,
     layout_config = {
@@ -93,43 +95,41 @@ end
 
 local float = require("core.ui.float")
 
---- @param app App
---- @param keymap table<AIAction>
---- @param contexts table<Context>
-M.draw_menu = function(app, keymap, contexts)
+--- @param state State
+M.draw_menu = function(state)
     if vim.g._user_ai_virtual_text_ns == nil then
         vim.g._user_ai_virtual_text_ns = vim.api.nvim_create_namespace("user_ai_virtual_text")
     end
 
-    vim.api.nvim_buf_clear_namespace(app.menu_bufnr, vim.g._user_ai_virtual_text_ns, 0, -1)
+    vim.api.nvim_buf_clear_namespace(state.menu.bufnr, vim.g._user_ai_virtual_text_ns, 0, -1)
 
     local lines = {}
-    for _, action in ipairs(keymap) do
-        local line = { { action.key .. " - ", "Comment" }, { action.name, "Special" } }
-        table.insert(lines, line)
+    for _, action in ipairs(state.actions) do
+        if not action.hidden then
+            local line = { { action.key .. " - ", "Comment" }, { action.name, "Special" } }
+            table.insert(lines, line)
+        end
     end
     table.insert(lines, {})
     table.insert(lines, { { "Contexts", "Comment" } })
 
-    for _, context in ipairs(contexts) do
-        local line
-        if context.active then
-            line = {
-                { context.key .. " - ", "Comment" },
-                { context.name, "Special" },
-                { " " .. context.meta(), "Comment" },
-            }
-        else
-            line = {
-                { context.key .. " - ", "Comment" },
-                { context.name, "Comment" },
-                { " " .. context.meta(), "Comment" },
-            }
+    for _, context in ipairs(state.contexts) do
+        local meta = { "", "Comment" }
+        if context.meta ~= nil then
+            meta = context.meta(state)
         end
-        table.insert(lines, line)
+        local active = "Comment"
+        if context.active then
+            active = "Special"
+        end
+        table.insert(lines, {
+            { context.key .. " - ", "Comment" },
+            { context.name .. " ", active },
+            meta,
+        })
     end
 
-    vim.api.nvim_buf_set_extmark(app.menu_bufnr, vim.g._user_ai_virtual_text_ns, 0, 0, {
+    vim.api.nvim_buf_set_extmark(state.menu.bufnr, vim.g._user_ai_virtual_text_ns, 0, 0, {
         virt_text = { { "AI Actions", "Comment" } },
         virt_lines = lines,
         virt_text_pos = "eol",
@@ -137,11 +137,9 @@ M.draw_menu = function(app, keymap, contexts)
 end
 
 --- should open a window on the RHS with the AI options (actions + )
---- @param app App
---- @param keymap table<AIAction>
---- @param contexts table<Context>
-M.open_menu = function(app, keymap, contexts)
-    app.menu_bufnr = float.open(nil, {
+--- @param state State
+M.open_menu = function(state)
+    state.menu.bufnr = float.open(nil, {
         rel = "rhs",
         row = 2,
         width = 21,
@@ -149,15 +147,85 @@ M.open_menu = function(app, keymap, contexts)
         enter = false,
         wo = { number = false, relativenumber = false },
     })
-    M.draw_menu(app, keymap, contexts)
+    M.draw_menu(state)
+    state.menu.open = true
+end
+
+--- @param state State
+--- @param ui string
+M.draw = function(state, ui)
+    M.draw_menu(state)
+    if ui == "blocks_open" then
+        M.draw_blocks_menu(state)
+    elseif ui == "blocks_redraw" then
+        M.draw_blocks_content(state)
+    elseif ui == "doc_task" or ui == "doc_patterns" then
+        M.draw_doc(state, ui)
+    end
+end
+
+--- @param state State
+--- @param ui string
+M.draw_doc = function(state, ui)
+    local title = ui == "doc_patterns" and "  Coding Patterns" or "  Task"
+    local rel_path = ui == "doc_patterns" and state.patterns.file_path or state.task.file_path
+    float.open(nil, {
+        rel = "center",
+        width = 0.8,
+        height = 0.3,
+        title = title,
+        close_on_q = true,
+        enter = true,
+    })
+    local path = git.root() .. "/" .. rel_path
+    vim.cmd("edit" .. path)
+end
+
+--- @param state State
+M.draw_blocks_content = function(state)
+    local block = state.blocks.list[state.blocks.pos]
+    local lines = vim.split(block.content, "\n")
+    local preview = { "", string.format("```%s", block.extension) }
+    for _, line in ipairs(lines) do
+        table.insert(preview, line)
+    end
+    table.insert(preview, "```")
+    vim.api.nvim_buf_set_lines(state.blocks.bufnr, 0, -1, false, preview)
+    local hg = block.active and "DiagnosticOk" or "Comment"
+    local ns = vim.api.nvim_create_namespace("user_ai_blocks_list")
+    vim.api.nvim_buf_clear_namespace(state.blocks.bufnr, ns, 0, -1)
+    vim.api.nvim_buf_set_extmark(state.blocks.bufnr, ns, 0, 0, {
+        virt_text = { { state.blocks.pos .. ":" .. block.path, hg } },
+        virt_text_pos = "overlay",
+    })
+end
+
+--- @param state State
+M.draw_blocks_menu = function(state)
+    if #state.blocks.list == 0 or state.blocks.open then
+        return
+    end
+
+    float.open(nil, {
+        bufnr = state.blocks.bufnr,
+        rel = "center",
+        width = 0.8,
+        height = 0.5,
+        enter = true,
+        bo = { filetype = "markdown" },
+        wo = { number = false, relativenumber = false, conceallevel = 1 },
+    })
+    state.blocks.open = true
+
+    M.draw_blocks_content(state)
 end
 
 local next_loader_id = 1
 
---- @param _start number
---- @param _end number
+--- @param _start integer
+--- @param _end integer
 --- @param apply_ghost boolean
---- @return number id
+--- @return integer id
 M.load_start = function(_start, _end, apply_ghost)
     local loader_id = next_loader_id
     next_loader_id = next_loader_id + 1
@@ -183,7 +251,7 @@ M.load_start = function(_start, _end, apply_ghost)
     return ns_id
 end
 
---- @param ns_id number namespace ID to clear for this loader
+--- @param ns_id integer namespace ID to clear for this loader
 M.load_end = function(ns_id)
     vim.api.nvim_buf_clear_namespace(0, ns_id, 0, -1)
 end

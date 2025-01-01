@@ -30,7 +30,7 @@ local MAX_DIAGNOSTICS = 3
 local MAX_DIAGNOSTIC_MSG_LENGTH = 80
 local SPACES = 4
 
---- @return table<number, vim.Diagnostic>
+--- @return table<integer, vim.Diagnostic>
 local collect_surrounding_diagnostics = function()
     local bufnr = vim.api.nvim_get_current_buf()
     local line = vim.api.nvim_win_get_cursor(0)[1] - 1 -- lines start at 0 (top)

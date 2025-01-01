@@ -1,7 +1,7 @@
 return {
     {
-        "CopilotC-Nvim/CopilotChat.nvim",
-        branch = "main",
+        "josiahdenton/CopilotChat.nvim",
+        branch = "703-fix-headless-mode-nil-source",
         dependencies = {
             -- { "zbirenbaum/copilot.lua" }, -- or github/copilot.vim
             { "nvim-lua/plenary.nvim" }, -- for curl, log wrapper

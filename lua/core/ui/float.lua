@@ -3,9 +3,10 @@ local M = {}
 local style = require("core.ui.style")
 
 --- @class FloatOpts
---- @field rel ?"cursor" | "center" | "rhs"
+--- @field rel ?"cursor" | "center" | "rhs" | "lhs"
 --- @field title ?string what to put as float title
 --- @field enter ?boolean whether to enter float, defaults to true
+--- @field bufnr ?integer buffer number
 --- @field cursor ?{row : integer, col: integer}
 --- @field height ?integer uses % of screen size
 --- @field width ?integer uses % of screen size
@@ -47,9 +48,8 @@ M.open = function(content, opts)
     end
     opts.bo = opts.bo or default_opts.bo
     opts.wo = opts.wo or default_opts.wo
-
+    local bufnr = opts.bufnr or vim.api.nvim_create_buf(true, true)
     local win = vim.api.nvim_get_current_win()
-    local bufnr = vim.api.nvim_create_buf(true, true)
     local win_width = vim.api.nvim_win_get_width(win)
     local win_height = vim.api.nvim_win_get_height(win)
 
@@ -72,6 +72,9 @@ M.open = function(content, opts)
     elseif opts.rel == "rhs" then
         row = 0
         col = vim.api.nvim_win_get_width(0) -- 0 refers to the current window
+    elseif opts.rel == "lhs" then
+        row = 0
+        col = 0
     end
 
     if opts.row ~= nil then
