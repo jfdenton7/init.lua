@@ -6,7 +6,7 @@ local store = require("core.extensions.ai.store")
 --- @return State
 M.setup = function(state)
     store.register_context({
-        name = "staged",
+        name = "",
         key = ",,g",
         active = false,
         ui = "menu",
@@ -15,7 +15,7 @@ M.setup = function(state)
         end,
     })
     store.register_context({
-        name = "buffer",
+        name = "",
         key = ",,B",
         active = false,
         ui = "menu",
@@ -24,7 +24,7 @@ M.setup = function(state)
         end,
     })
     store.register_context({
-        name = "file tree",
+        name = "",
         key = ",,f",
         active = false,
         ui = "menu",

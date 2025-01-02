@@ -10,8 +10,12 @@ return {
             require("catppuccin").setup({
                 custom_highlights = function(colors)
                     return {
-                        MiniTablineTabpagesection = { fg = colors.green }, -- gui bold?
-                        HighlightYank = { bg = colors.peach },
+                        MiniTablineTabpagesection = { fg = colors.green, style = { "bold" } },
+                        HighlightYank = { bg = colors.mauve },
+                        AIActionsHeader = { fg = colors.lavender, style = { "bold" } },
+                        AIActionsAction = { fg = colors.lavender },
+                        AIActionsInActiveContext = { link = "Comment" },
+                        AIActionsActiveContext = { fg = colors.peach, style = { "bold" } },
                     }
                 end,
             })

@@ -8,6 +8,7 @@ local ui = require("core.extensions.ai.ui")
 --- @class State
 --- @field menu AIMenu
 --- @field blocks Blocks
+--- @field url string
 --- @field patterns Document
 --- @field task Document
 --- @field actions table<AIAction>
@@ -56,6 +57,7 @@ M.default_state = function()
             open = false,
             bufnr = -1,
         },
+        url = "",
         blocks = {
             pos = 1,
             list = {},
@@ -126,7 +128,7 @@ M.register_action = function(action, opts)
         if state.menu.open then
             ui.draw(state, action.ui)
         end
-        if action.name ~= "quit" then
+        if action.key ~= ",q" then
             vim.defer_fn(M.persist, 0)
         end
     end, { desc = "ai: " .. action.name, buffer = opts.bufnr })
@@ -148,6 +150,7 @@ end
 --- @class PersistedState
 --- @field blocks table<Block>
 --- @field block_pos integer
+--- @field url string
 --- @field contexts table<string, boolean>
 
 --- called whenever a state change occurs, with a 500ms delay
@@ -155,13 +158,14 @@ end
 M.persist = function()
     local contexts = {}
     for _, context in ipairs(state.contexts) do
-        contexts[context.name] = context.active
+        contexts[context.key] = context.active
     end
 
     --- @type PersistedState
     local persisted = {
         blocks = state.blocks.list,
         block_pos = state.blocks.pos,
+        url = state.url,
         contexts = contexts,
     }
 
@@ -185,9 +189,10 @@ M.setup = function()
         local persisted = vim.fn.json_decode(content)
         state.blocks.list = persisted.blocks
         state.blocks.pos = persisted.block_pos
+        state.url = persisted.url
         for _, context in ipairs(state.contexts) do
-            if persisted.contexts[context.name] ~= nil then
-                context.active = persisted.contexts[context.name]
+            if persisted.contexts[context.key] ~= nil then
+                context.active = persisted.contexts[context.key]
             end
         end
     end

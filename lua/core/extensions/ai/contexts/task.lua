@@ -7,7 +7,7 @@ local store = require("core.extensions.ai.store")
 --- @return State
 M.setup = function(state)
     store.register_action({
-        name = "task",
+        name = "",
         msg = "",
         mode = "n",
         key = ",t",
@@ -16,7 +16,7 @@ M.setup = function(state)
         apply = M.open,
     })
     store.register_context({
-        name = "task",
+        name = "",
         key = ",,t",
         ui = "menu",
         active = false,

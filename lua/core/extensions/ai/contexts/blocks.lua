@@ -24,16 +24,16 @@ end
 --- @return State
 M.setup = function(state)
     store.register_action({
-        name = "add block",
-        msg = "added block",
+        name = "󰩭",
+        msg = "added selection",
         mode = "v",
-        key = ",b",
+        key = ",s",
         hidden = false,
         apply = M.add,
         ui = "menu",
     })
     store.register_action({
-        name = "list blocks",
+        name = "",
         msg = "",
         mode = "n",
         key = ",l",
@@ -42,8 +42,8 @@ M.setup = function(state)
         ui = "blocks_open",
     })
     store.register_action({
-        name = "clear blocks",
-        msg = "cleared blocks",
+        name = "󱟃",
+        msg = "cleared selections",
         mode = "n",
         key = ",z",
         hidden = false,
@@ -51,7 +51,7 @@ M.setup = function(state)
         ui = "menu",
     })
     store.register_context({
-        name = "blocks",
+        name = "",
         key = ",,b",
         active = false,
         getter = M.context,
@@ -123,6 +123,7 @@ end
 local MAX_BLOCKS = 10
 
 --- @param state State
+--- @return State
 M.add = function(state)
     local start_line, end_line = buffer.active_selection()
     local relative_file_path = vim.fn.expand("%:.")

@@ -7,7 +7,7 @@ local store = require("core.extensions.ai.store")
 --- @return State
 M.setup = function(state)
     store.register_context({
-        name = "selection",
+        name = "󰒉",
         key = ",,s",
         ui = "menu",
         active = false,

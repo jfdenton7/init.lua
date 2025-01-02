@@ -14,7 +14,7 @@ local CMD_POSTFIX = "</command>"
 --- @return State
 M.setup = function(state)
     store.register_action({
-        name = "generate",
+        name = "",
         msg = "",
         mode = { "n", "v" },
         key = ",g",
@@ -23,7 +23,7 @@ M.setup = function(state)
         apply = M.generate,
     })
     store.register_action({
-        name = "review",
+        name = "",
         msg = "reviewing buffer",
         mode = "n",
         key = ",r",
@@ -32,7 +32,7 @@ M.setup = function(state)
         apply = M.review,
     })
     store.register_action({
-        name = "plan",
+        name = "󰧑",
         msg = "",
         mode = "n",
         key = ",P",
@@ -41,13 +41,36 @@ M.setup = function(state)
         apply = M.plan,
     })
     store.register_action({
-        name = "ask",
+        name = "",
         msg = "",
-        mode = "n",
+        mode = { "n", "x" },
         key = ",a",
         ui = "menu",
         hidden = false,
         apply = M.ask,
+    })
+    store.register_action({
+        name = "󱈅",
+        msg = "getting explanation",
+        mode = { "x" },
+        key = ",e",
+        ui = "menu",
+        hidden = false,
+        apply = M.explain,
+    })
+    store.register_context({
+        name = " ",
+        key = ",,A",
+        active = false,
+        getter = M.qr_history_context,
+        ui = "menu",
+    })
+    store.register_context({
+        name = " 󱈅",
+        key = ",,E",
+        active = false,
+        getter = M.er_history_context,
+        ui = "menu",
     })
 
     return state
@@ -66,7 +89,56 @@ local contexts = function(state)
     return prompt
 end
 
---- diagnose errors / race conditions in the current buffer
+--- @type string represents the last response from M.explain
+local er_history = ""
+
+--- @param state State
+--- @return State
+M.explain = function(state)
+    local sel_start, sel_end = buffer.active_selection()
+    local lines = vim.api.nvim_buf_get_lines(0, sel_start - 1, sel_end, false)
+    local selected_text = table.concat(lines, "\n")
+
+    local prompt = [[
+<rules>
+- provide an explanation for the following code.
+- use example input as you go through the code
+- discuss how the code modifies the input
+</rules>
+<code>]] .. selected_text .. "</code>"
+
+    chat.ask(prompt, {
+        headless = true,
+        callback = function(response, _)
+            er_history = response
+            float.open(response, {
+                enter = false,
+                rel = "lhs",
+                row = 1000,
+                height = 0.25,
+                width = 0.8,
+                bo = { filetype = "markdown" },
+                wo = { wrap = true },
+                close_on_q = true,
+            })
+        end,
+    })
+    return state
+end
+
+--- @param _ State
+--- @return string
+M.er_history_context = function(_)
+    if #er_history == 0 then
+        return ""
+    end
+    return "<chat-history>" .. er_history .. "</chat-history>"
+end
+
+--- @type string represents the last response from M.ask
+local qr_history = ""
+
+--- respond to a question based off of the available context
 --- @param state State
 --- @return State
 M.ask = function(state)
@@ -74,10 +146,21 @@ M.ask = function(state)
         if input == nil or #input == 0 then
             return
         end
-        local pre = "answer the following question, keep it short and to the point"
-        chat.ask(pre .. input .. "\n" .. contexts(state), {
+        local pre = [[
+<rules>
+- answer the following question
+- keep it short, to the point, and use markdown standards.
+- if there is a previous question, then this question builds on that one
+</rules>
+        ]]
+        chat.ask(pre .. "<question>" .. input .. "</question>\n" .. contexts(state), {
             headless = true,
             callback = function(response, _)
+                qr_history = "<previous-question>"
+                    .. input
+                    .. "</previous-question><previous-answer>"
+                    .. response
+                    .. "</previous-answer>"
                 float.open(response, {
                     enter = false,
                     rel = "lhs",
@@ -92,6 +175,15 @@ M.ask = function(state)
         })
     end)
     return state
+end
+
+--- @param _ State
+--- @return string
+M.qr_history_context = function(_)
+    if #qr_history == 0 then
+        return ""
+    end
+    return "<chat-history>" .. qr_history .. "</chat-history>"
 end
 
 --- diagnose errors / race conditions in the current buffer
@@ -109,10 +201,14 @@ end
 --- @return State
 M.plan = function(state)
     vim.cmd("tabnew")
-    chat.ask(
-        "describe the next steps to complete the task, keep the answer short and in bullets: "
-            .. contexts(state)({ window = { layout = "replace" }, highlight_selection = false })
-    )
+    chat.ask([[
+<rules>
+- describe the next steps to complete the task
+- keep the answer short and in bullets
+- focus on code changes and how best to structure the solution
+- talk about possible design alternatives
+</rules>
+        ]] .. contexts(state)({ window = { layout = "replace" }, highlight_selection = false }))
     return state
 end
 

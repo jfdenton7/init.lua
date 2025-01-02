@@ -6,7 +6,7 @@ local store = require("core.extensions.ai.store")
 --- @return State
 M.setup = function(state)
     store.register_action({
-        name = "quit",
+        name = "󰈆",
         msg = "",
         mode = "n",
         key = ",q",

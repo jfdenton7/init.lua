@@ -106,31 +106,31 @@ M.draw_menu = function(state)
     local lines = {}
     for _, action in ipairs(state.actions) do
         if not action.hidden then
-            local line = { { action.key .. " - ", "Comment" }, { action.name, "Special" } }
+            local line = { { action.key .. " - ", "Comment" }, { action.name, "AIActionsAction" } }
             table.insert(lines, line)
         end
     end
     table.insert(lines, {})
-    table.insert(lines, { { "Contexts", "Comment" } })
+    table.insert(lines, { { "Contexts", "AIActionsHeader" } })
 
     for _, context in ipairs(state.contexts) do
         local meta = { "", "Comment" }
         if context.meta ~= nil then
             meta = context.meta(state)
         end
-        local active = "Comment"
+        local status_hg = "AIActionsInActiveContext"
         if context.active then
-            active = "Special"
+            status_hg = "AIActionsActiveContext"
         end
         table.insert(lines, {
-            { context.key .. " - ", "Comment" },
-            { context.name .. " ", active },
+            { context.key .. " - ", status_hg },
+            { context.name .. "  ", status_hg },
             meta,
         })
     end
 
     vim.api.nvim_buf_set_extmark(state.menu.bufnr, vim.g._user_ai_virtual_text_ns, 0, 0, {
-        virt_text = { { "AI Actions", "Comment" } },
+        virt_text = { { "AI Actions", "AIActionsHeader" } },
         virt_lines = lines,
         virt_text_pos = "eol",
     })
@@ -141,9 +141,9 @@ end
 M.open_menu = function(state)
     state.menu.bufnr = float.open(nil, {
         rel = "rhs",
-        row = 2,
-        width = 21,
-        height = 0.80,
+        row = 3,
+        width = 15,
+        height = 28,
         enter = false,
         wo = { number = false, relativenumber = false },
     })
@@ -192,10 +192,20 @@ M.draw_blocks_content = function(state)
     table.insert(preview, "```")
     vim.api.nvim_buf_set_lines(state.blocks.bufnr, 0, -1, false, preview)
     local hg = block.active and "DiagnosticOk" or "Comment"
+    local symbol = block.active and "  " or "  "
     local ns = vim.api.nvim_create_namespace("user_ai_blocks_list")
     vim.api.nvim_buf_clear_namespace(state.blocks.bufnr, ns, 0, -1)
     vim.api.nvim_buf_set_extmark(state.blocks.bufnr, ns, 0, 0, {
-        virt_text = { { state.blocks.pos .. ":" .. block.path, hg } },
+        virt_text = {
+            {
+                string.rep(" ", 4) .. symbol .. block.path .. " " .. string.format(
+                    "(%d/%d)",
+                    state.blocks.pos,
+                    #state.blocks.list
+                ),
+                hg,
+            },
+        },
         virt_text_pos = "overlay",
     })
 end
