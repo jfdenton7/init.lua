@@ -81,7 +81,7 @@ M.ask = function(state)
                 float.open(response, {
                     enter = false,
                     rel = "lhs",
-                    height = 3,
+                    height = 10,
                     width = 0.8,
                     bo = { filetype = "markdown" },
                     wo = { wrap = true },
