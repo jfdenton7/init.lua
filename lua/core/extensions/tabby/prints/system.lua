@@ -2,6 +2,14 @@ local M = {}
 
 local store = require("core.extensions.tabby.store")
 
+local CACHE_UPDATE_TIME = 90000
+local cache = {
+    battery_level = nil,
+}
+local valid = {
+    battery_level = false,
+}
+
 --- @class tabby.BatteryStatus
 --- @field condition integer
 --- @field symbol string
@@ -22,30 +30,39 @@ local battery_levels = {
 
 --- @return string
 local battery = function()
-    local cmd = vim.system({ "pmset", "-g", "batt" }, { text = true }):wait()
-    local pattern = "%d%d%d?%%" -- %d%d%d? matches 2 or 3 digits, %% matches the '%' character
+    if cache.battery_level and valid.battery_level then
+        return cache.battery_level
+    end
 
-    local segments = vim.split(cmd.stdout, " ", { trimempty = true })
-    local percentage = ""
-    for _, segment in ipairs(segments) do
-        local start_pos, end_pos = string.find(segment, pattern)
-        if start_pos and end_pos then
-            percentage = string.sub(segment, start_pos, end_pos)
-            percentage = string.sub(percentage, 1, #percentage - 1)
+    vim.system({ "pmset", "-g", "batt" }, { text = true }, function(cmd)
+        local pattern = "%d%d?%d?%%" -- %d%d%d? matches 2 or 3 digits, %% matches the '%' character
+
+        local segments = vim.split(cmd.stdout, " ", { trimempty = true })
+        local percentage = ""
+        for _, segment in ipairs(segments) do
+            local start_pos, end_pos = string.find(segment, pattern)
+            if start_pos and end_pos then
+                percentage = string.sub(segment, start_pos, end_pos)
+                percentage = string.sub(percentage, 1, #percentage - 1)
+            end
         end
-    end
-    if #percentage == 0 then
-        return "󰂑"
-    end
-
-    local remaining = tonumber(percentage)
-    for _, level in ipairs(battery_levels) do
-        if remaining >= level.condition then
-            return level.symbol
+        if #percentage == 0 then
+            cache.battery_level = "󰂑"
+            valid.battery_level = true
+            return
         end
-    end
 
-    return "?"
+        local remaining = tonumber(percentage)
+        for _, level in ipairs(battery_levels) do
+            if remaining >= level.condition then
+                cache.battery_level = level.symbol
+                valid.battery_level = true
+                return
+            end
+        end
+    end)
+
+    return cache.battery_level or ""
 end
 
 local hours_minutes = function()
@@ -64,6 +81,15 @@ M.setup = function()
             return { { hours_minutes, "DiagnosticOk" }, { " ", "Comment" }, { battery, "DiagnosticOk" } }
         end,
     })
+
+    local timer = vim.uv.new_timer()
+    timer:start(
+        CACHE_UPDATE_TIME,
+        CACHE_UPDATE_TIME,
+        vim.schedule_wrap(function()
+            valid.battery_level = false
+        end)
+    )
 end
 
 return M
