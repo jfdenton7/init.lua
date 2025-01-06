@@ -50,6 +50,23 @@ If you want to use dap, you will need the debugger tools, such as
 - [debugpy for python](https://github.com/microsoft/debugpy)
 - [codelldb for rust](https://github.com/mfussenegger/nvim-dap/wiki/C-C---Rust-(via--codelldb))
 
+### What's Next
+
+- steps extension
+ - have a floating buffer where you can modify a "stack" of next steps
+ - next step displayed in winbar
+ - cycle steps via ] / [ 
+ - complete a step as well
+ - add / modify in the float (such as changing order)
+ - since it's a stack, last added item on top
+ - we'll overlay the text content
+ - insert mode will wipe the ns 
+ - back to normal, grab buffer content and update stack + draw again
+ - dd will delete a step and we'll re-draw
+- player
+ - winbar of current music playing (uses CLI)
+ - callback after song ends / prev / next / play
+
 ### Plugins
 ```
     ● cmp-buffer 0.2ms  nvim-cmp

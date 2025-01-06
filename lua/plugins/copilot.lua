@@ -1,5 +1,22 @@
 return {
     {
+        -- TODO: go back
+        dir = "/Users/jfdenton/work/copilot-chat-context.nvim",
+        dependencies = {
+            "josiahdenton/CopilotChat.nvim",
+            "echasnovski/mini.nvim",
+            -- other dependencies
+        },
+        config = function()
+            local context = require("copilot-chat-context")
+            context.setup()
+            vim.keymap.set("n", "<leader>ai", function()
+                context.open()
+            end, { desc = "open AI action panel" })
+        end,
+        -- other configurations
+    },
+    {
         "josiahdenton/CopilotChat.nvim",
         branch = "703-fix-headless-mode-nil-source",
         dependencies = {
@@ -65,8 +82,6 @@ return {
                     auto_follow_cursor = true,
                 })
             end, { desc = "copilot open menu" })
-
-            require("core.extensions.ai").setup()
         end,
     },
 }

@@ -12,10 +12,11 @@ return {
                     return {
                         MiniTablineTabpagesection = { fg = colors.green, style = { "bold" } },
                         HighlightYank = { bg = colors.mauve },
-                        AIActionsHeader = { fg = colors.lavender, style = { "bold" } },
+                        AIActionsHeader = { fg = colors.lavender, style = { "bold" } }, -- mauve
                         AIActionsAction = { fg = colors.lavender },
                         AIActionsInActiveContext = { link = "Comment" },
                         AIActionsActiveContext = { fg = colors.peach, style = { "bold" } },
+                        Folded = { fg = colors.peach, bg = "" },
                     }
                 end,
             })

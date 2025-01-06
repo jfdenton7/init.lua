@@ -5,6 +5,8 @@ local user = require("core.extensions.folds.user")
 local find = require("core.extensions.folds.find")
 local generate = require("core.extensions.folds.generate")
 
+-- local mini_notify = require("mini.notify")
+
 M.user_ranges = function()
     if vim.g.custom_focus_mode ~= nil and vim.g.custom_focus_mode then
         vim.cmd("normal zE")
@@ -14,7 +16,11 @@ M.user_ranges = function()
     end
 
     if #user.user_ranges == 0 then
-        vim.notify("no set user ranges for this buffer", vim.log.levels.WARN, {})
+        -- vim.notify("no set user ranges for this buffer", vim.log.levels.WARN, {})
+        -- local id = mini_notify.add("no set user ranges for this buffer", "WARN", "Comment")
+        -- vim.defer_fn(function()
+        --     mini_notify.remove(id)
+        -- end, 1500)
         return
     end
 
