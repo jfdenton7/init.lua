@@ -21,11 +21,6 @@ local custom_globals = function()
     vim.g.learning_dir = vim.env.HOME .. "/learning"
 end
 
-local setup_ui = function()
-    -- require("core.ui.statusline").setup()
-    require("core.ui.winbar").setup()
-end
-
 local setup_neovide = function()
     vim.o.guifont = "GeistMono Nerd Font Mono"
     vim.g.neovide_transparency = 0.8
@@ -39,13 +34,19 @@ local vim_globals = function()
     vim.g.hidden = true -- explicitly set to play nice with diffview
 end
 
+local statusline = function()
+    -- vim.opt.laststatus = 2 -- Or 3 for global statusline
+    -- vim.opt.statusline = " %f %m %= %l:%c ♥ "
+    require("core.ui.statusline").setup()
+end
+
 M.setup = function()
     local ui = require("core.ui.style")
+    statusline()
     custom_filetypes()
     vim_globals()
     plugin_globals()
     custom_globals()
-    setup_ui()
 
     -- reduce update time
     vim.opt.updatetime = 250

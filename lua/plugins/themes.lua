@@ -1,9 +1,41 @@
 return {
     -- vim.cmd("highlight CustomCmpPicker guibg=#b4ebbc guifg=#212031 gui=bold")
     {
+        "rose-pine/neovim",
+        name = "rose-pine",
+        enabled = true,
+        priority = 1000,
+        config = function()
+            require("rose-pine").setup({
+                variant = "main", -- auto, main, moon, or dawn
+                dark_variant = "main", -- main, moon, or dawn
+
+                highlight_groups = {
+                    StatusLine = { fg = "love", bg = "love", blend = 10 },
+                    StatusLineNC = { fg = "subtle", bg = "surface" },
+                    -- Comment = { fg = "foam" },
+                    -- VertSplit = { fg = "muted", bg = "muted" },
+                    -- MiniTablineTabpagesection = { fg = colors.green, style = { "bold" } },
+                    HighlightYank = { bg = "rose" },
+                    AIActionsHeader = { fg = "pine", bold = true }, -- mauve
+                    AIActionsAction = { fg = "pine" },
+                    AIActionsInActiveContext = { link = "Comment" },
+                    AIActionsActiveContext = { fg = "love", bold = true },
+                    Folded = { fg = "rose", bg = "" },
+                },
+            })
+
+            vim.cmd("colorscheme rose-pine")
+            -- vim.cmd("colorscheme rose-pine-main")
+            -- vim.cmd("colorscheme rose-pine-moon")
+            -- vim.cmd("colorscheme rose-pine-dawn")
+            vim.cmd("colorscheme rose-pine")
+        end,
+    },
+    {
         "catppuccin/nvim",
         name = "catppuccin",
-        enabled = true,
+        enabled = false,
         priority = 1000,
         lazy = false,
         config = function()

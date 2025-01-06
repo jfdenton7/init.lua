@@ -1,23 +1,5 @@
 local M = {}
 
-local git_symbols = require("core.ui.symbols").git()
-
----@return string
-M.lsp_clients = function()
-    local bufnr = vim.api.nvim_get_current_buf()
-    local clients = vim.lsp.get_clients({ bufnr = bufnr })
-    if next(clients) == nil then
-        return ""
-    end
-
-    local c = {}
-    for _, client in pairs(clients) do
-        table.insert(c, client.name)
-    end
-
-    return "\u{f085}  " .. table.concat(c, "|")
-end
-
 ---@return string
 M.active_macro_register = function()
     if vim.fn.reg_recording() ~= "" then
@@ -40,7 +22,7 @@ local mode_map = {
     ["ntT"] = "NORMAL",
     ["v"] = "VISUAL",
     ["vs"] = "VISUAL",
-    ["V"] = "VISUAL",
+    ["V"] = "S-VISUAL",
     ["Vs"] = "VISUAL",
     ["\22"] = "VISUAL",
     ["\22s"] = "VISUAL",
@@ -71,85 +53,55 @@ M.mode = function()
     local mode = mode_map[vim.api.nvim_get_mode().mode] or "UNKNOWN"
 
     -- -- Set the highlight group.
-    -- local hl = "Other"
-    -- if mode:find("NORMAL") then
-    --     hl = "Normal"
-    -- elseif mode:find("PENDING") then
-    --     hl = "Pending"
-    -- elseif mode:find("VISUAL") then
-    --     hl = "Visual"
-    -- elseif mode:find("INSERT") or mode:find("SELECT") then
-    --     hl = "Insert"
-    -- elseif mode:find("COMMAND") or mode:find("TERMINAL") or mode:find("EX") then
-    --     hl = "Command"
-    -- end
-    -- string.format('%%#StatuslineModeSeparator%s#', hl),
-
-    -- Construct the bubble-like component.
-    -- return mode
-    -- return table.concat({
-    --     string.format("%%#StatuslineModeSeparator%s#", hl),
-    --     string.format("%%#StatuslineMode%s#%s", hl, mode),
-    --     string.format("%%#StatuslineModeSeparator%s#", hl),
-    -- })
-
-    return table.concat({
-        -- string.format("%%#StatuslineModeSeparator#"),
-        string.format("%%#StatuslineMode#%s", mode),
-        -- string.format("%%#StatuslineModeSeparator#"),
-    })
-    -- return
+    local hl = "Other"
+    if mode:find("NORMAL") then
+        hl = "Normal"
+    elseif mode:find("REPLACE") then
+        hl = "Replace"
+    elseif mode:find("VISUAL") then
+        hl = "Visual"
+    elseif mode:find("INSERT") or mode:find("SELECT") then
+        hl = "Insert"
+    elseif mode:find("COMMAND") or mode:find("TERMINAL") or mode:find("EX") then
+        hl = "Command"
+    end
+    return string.format("%%#MiniStatuslineMode%s#%s", hl, " " .. mode)
 end
 
-M.diagnostics = function()
-    local ok = "(󰄬)"
-
-    local ignore = {
-        ["c"] = true, -- command mode
-        ["t"] = true, -- terminal mode
-    }
-
-    local mode = vim.api.nvim_get_mode().mode
-
-    if ignore[mode] then
-        return ok
-    end
-
-    local levels = vim.diagnostic.severity
-    local errors = #vim.diagnostic.get(0, { severity = levels.ERROR })
-    local warnings = #vim.diagnostic.get(0, { severity = levels.WARN })
-
-    if errors > 0 and warnings > 0 then
-        return string.format("(%d ✘) (%d )", errors, warnings)
-    elseif errors > 0 then
-        return string.format("(%d ✘)", errors)
-    elseif warnings > 0 then
-        return string.format("(%d )", warnings)
-    end
-
-    return ok
-end
-
-M.render = function()
+M.active = function()
     return table.concat({
         "",
         "%{%v:lua.require'core.ui.statusline'.mode()%}",
-        git_symbols.Branch,
-        "%{%v:lua.require'core.extensions.git'.branch_name()%}",
-        "%{%v:lua.require'core.ui.statusline'.diagnostics()%}",
+        "%#StatusLine#",
         "%=",
         "%{%v:lua.require'core.ui.statusline'.active_macro_register()%}",
-        "",
-        "%{%v:lua.require'core.ui.statusline'.lsp_clients()%}",
         "",
         "%l:%c",
         "",
     }, " ")
 end
 
+M.inactive = function()
+    return "%#StatusLineNC#"
+end
+
+local draw_statusline = vim.schedule_wrap(function()
+    local cur_win_id = vim.api.nvim_get_current_win()
+    for _, win_id in ipairs(vim.api.nvim_list_wins()) do
+        vim.wo[win_id].statusline = (win_id == cur_win_id) and "%{%v:lua.require'core.ui.statusline'.active()%}"
+            or "%{%v:lua.require'core.ui.statusline'.inactive()%}"
+    end
+end)
+
 M.setup = function()
     vim.opt.laststatus = 2
-    vim.opt.statusline = "%{%v:lua.require'core.ui.statusline'.render()%}"
+    vim.api.nvim_create_autocmd({ "WinEnter", "BufWinEnter" }, {
+        group = vim.api.nvim_create_augroup("user/statusline", { clear = true }),
+        desc = "Attach statusline",
+        callback = function()
+            draw_statusline()
+        end,
+    })
 end
 
 return M
