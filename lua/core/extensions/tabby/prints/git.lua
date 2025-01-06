@@ -1,6 +1,8 @@
 local M = {}
 
 local store = require("core.extensions.tabby.store")
+--- we only update every 30 seconds or when
+--- we have successfully written to the buffer
 local CACHE_UPDATE_TIME = 30000
 local cache = {
     branch = nil,
