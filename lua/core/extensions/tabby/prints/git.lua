@@ -59,18 +59,20 @@ local stat = function()
         if out.stdout then
             local lines = vim.split(out.stdout, "\n", { trimempty = true })
             local changes = lines[#lines]
-            local changes_by_type = vim.split(changes, ",", { trimempty = true })
-            local content = {}
-            for _, change in ipairs(changes_by_type) do
-                local amount = string.match(change, "%d+")
-                local symbol, hg = change_symbol(change)
-                table.insert(content, { " ", "Comment" })
-                table.insert(content, { amount, "Comment" })
-                table.insert(content, { " ", "Comment" })
-                table.insert(content, { symbol, hg })
-                table.insert(content, { " ", "Comment" })
+            if changes and #changes > 0 then
+                local changes_by_type = vim.split(changes, ",", { trimempty = true })
+                local content = {}
+                for _, change in ipairs(changes_by_type) do
+                    local amount = string.match(change, "%d+")
+                    local symbol, hg = change_symbol(change)
+                    table.insert(content, { " ", "Comment" })
+                    table.insert(content, { amount, "Comment" })
+                    table.insert(content, { " ", "Comment" })
+                    table.insert(content, { symbol, hg })
+                    table.insert(content, { " ", "Comment" })
+                end
+                cache.stat = content
             end
-            cache.stat = content
         else
             cache.stat = {}
         end
