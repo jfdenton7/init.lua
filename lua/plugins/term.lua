@@ -103,11 +103,13 @@ return {
                 end,
                 -- function to run on closing the terminal
                 on_close = function(term)
+                    vim.cmd("tabclose")
                     vim.cmd("startinsert!")
                 end,
             })
 
             local lazygit_toggle = function()
+                vim.cmd("tabnew")
                 lazygit:toggle()
             end
 
