@@ -209,6 +209,12 @@ return {
                             processId = require("dap.utils").pick_process,
                             cwd = "${workspaceFolder}",
                         },
+                        {
+                            type = "pwa-node",
+                            request = "attach",
+                            name = "Auto Attach", -- run the node proces with --inspect
+                            cwd = "${workspaceFolder}",
+                        },
                     }
                 end
             end
