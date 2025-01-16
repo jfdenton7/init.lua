@@ -75,11 +75,10 @@ return {
                 vim.cmd("Git blame -- %")
             end, { desc = "git blame file" })
 
+            local buffer = require("core.editor.buffer")
             vim.keymap.set({ "v", "x" }, "<leader>gb", function()
-                local start_line = vim.api.nvim_buf_get_mark(0, "<")[1]
-                local end_line = vim.api.nvim_buf_get_mark(0, ">")[1]
-
-                vim.cmd(string.format("Git blame -L %d,%d -- %%", start_line, end_line))
+                local _start, _end = buffer.active_selection()
+                vim.cmd(string.format("Git blame -L %d,%d -- %%", _start, _end))
             end, { desc = "git blame selection" })
 
             local mini_files = require("mini.files")
