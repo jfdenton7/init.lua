@@ -1,5 +1,13 @@
 return {
     {
+        "josiahdenton/statusbar.nvim",
+        lazy = false,
+        priority = 1000,
+        config = function()
+            require("statusbar").setup()
+        end,
+    },
+    {
         "nvchad/minty",
         enabled = true,
         lazy = true,
@@ -40,7 +48,7 @@ return {
     },
     {
         "folke/noice.nvim",
-        enabled = true,
+        enabled = false,
         event = "VeryLazy",
         opts = {
             -- add any options here
