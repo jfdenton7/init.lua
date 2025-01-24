@@ -37,7 +37,7 @@ end
 local statusline = function()
     -- vim.opt.laststatus = 2 -- Or 3 for global statusline
     -- vim.opt.statusline = " %f %m %= %l:%c ♥ "
-    -- require("core.ui.statusline").setup()
+    require("core.ui.statusline").setup()
 end
 
 M.setup = function()

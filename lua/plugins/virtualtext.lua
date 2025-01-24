@@ -1,7 +1,7 @@
 return {
     {
-        -- "josiahdenton/inline-session-notes.nvim",
-        dir = "/Users/jfdenton/work/inline-session-notes.nvim",
+        "josiahdenton/inline-session-notes.nvim",
+        -- dir = "/Users/jfdenton/work/inline-session-notes.nvim",
         config = function()
             local inline = require("inline-session-notes")
             inline.setup({

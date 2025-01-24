@@ -1,7 +1,8 @@
 return {
     {
         -- TODO: go back
-        dir = "/Users/jfdenton/work/copilot-chat-context.nvim",
+        -- dir = "/Users/jfdenton/work/copilot-chat-context.nvim",
+        "josiahdenton/copilot-chat-context.nvim",
         dependencies = {
             "josiahdenton/CopilotChat.nvim",
             "echasnovski/mini.nvim",
