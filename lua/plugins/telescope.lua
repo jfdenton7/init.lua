@@ -103,9 +103,9 @@ return {
                 builtins.spell_suggest(themes.get_cursor())
             end, {})
 
-            vim.keymap.set("n", "<leader>fe", function()
-                builtins.diagnostics(themes.get_ivy())
-            end)
+            -- vim.keymap.set("n", "<leader>fe", function()
+            --     builtins.diagnostics(themes.get_ivy())
+            -- end)
 
             vim.keymap.set("n", "<leader>fh", function()
                 builtins.help_tags()

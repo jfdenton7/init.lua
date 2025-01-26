@@ -1,10 +1,9 @@
 return {
     {
         -- TODO: go back
-        -- dir = "/Users/jfdenton/work/copilot-chat-context.nvim",
         "josiahdenton/copilot-chat-context.nvim",
         dependencies = {
-            "josiahdenton/CopilotChat.nvim",
+            "CopilotC-Nvim/CopilotChat.nvim",
             "echasnovski/mini.nvim",
             -- other dependencies
         },
@@ -18,8 +17,7 @@ return {
         -- other configurations
     },
     {
-        "josiahdenton/CopilotChat.nvim",
-        branch = "703-fix-headless-mode-nil-source",
+        "CopilotC-Nvim/CopilotChat.nvim",
         dependencies = {
             -- { "zbirenbaum/copilot.lua" }, -- or github/copilot.vim
             { "nvim-lua/plenary.nvim" }, -- for curl, log wrapper

@@ -136,27 +136,27 @@ end
 
 M.setup = function()
     -- TOOD: should revisit this and try something else... maybe a floating window of some kind?
-    vim.api.nvim_create_autocmd({ "DiagnosticChanged", "CursorMoved" }, {
-        pattern = {
-            "*.c",
-            "*.h",
-            "*.ts",
-            "*.js",
-            "*.tsx",
-            "*.jsx",
-            "*.rs",
-            "*.go",
-            "*.py",
-            "*.css",
-            "*.scss",
-            "*.vue",
-            "*.html",
-            "*.json",
-            "*.java",
-            "*.lua",
-        },
-        callback = show_virtual_text_diagnostics,
-    })
+    -- vim.api.nvim_create_autocmd({ "DiagnosticChanged", "CursorMoved" }, {
+    --     pattern = {
+    --         "*.c",
+    --         "*.h",
+    --         "*.ts",
+    --         "*.js",
+    --         "*.tsx",
+    --         "*.jsx",
+    --         "*.rs",
+    --         "*.go",
+    --         "*.py",
+    --         "*.css",
+    --         "*.scss",
+    --         "*.vue",
+    --         "*.html",
+    --         "*.json",
+    --         "*.java",
+    --         "*.lua",
+    --     },
+    --     callback = show_virtual_text_diagnostics,
+    -- })
 
     vim.api.nvim_create_autocmd("RecordingEnter", {
         pattern = "*",

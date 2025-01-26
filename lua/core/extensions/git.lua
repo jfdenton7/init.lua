@@ -1,11 +1,6 @@
 local M = {}
 
 M.setup = function()
-    vim.keymap.set("n", "<leader>goc", function()
-        local commit_hash = vim.fn.expand("<cword>")
-        vim.fn.system(string.format("gh browse %s", commit_hash))
-    end, { desc = "git browse commit hash" })
-
     vim.keymap.set("n", "<leader>gof", function()
         local file_name = vim.fn.expand("%:.")
         vim.fn.system(string.format("gh browse %s", file_name))
