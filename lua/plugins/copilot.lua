@@ -14,7 +14,6 @@ return {
                 context.open()
             end, { desc = "open AI action panel" })
         end,
-        -- other configurations
     },
     {
         "CopilotC-Nvim/CopilotChat.nvim",

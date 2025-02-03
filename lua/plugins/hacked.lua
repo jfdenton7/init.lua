@@ -6,6 +6,19 @@ return {
             require("hacked.diagnostics").setup()
             require("hacked.blame").setup()
             require("hacked.executor").setup()
+            require("hacked.portal").setup()
+
+            vim.keymap.set({ "n", "x" }, "<leader>ba", function()
+                require("hacked.portal").save()
+            end)
+
+            vim.keymap.set("n", "<leader>bo", function()
+                require("hacked.portal").open()
+            end)
+
+            vim.keymap.set("n", "<leader>bz", function()
+                require("hacked.portal").clear()
+            end)
 
             vim.keymap.set("n", "<leader>fe", function()
                 require("hacked.multibuffer").diagnostics()
