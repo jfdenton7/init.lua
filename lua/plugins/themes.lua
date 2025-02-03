@@ -16,6 +16,10 @@ return {
                     hl.AIActionsInActiveContext = { link = "Comment" }
                     hl.AIActionsActiveContext = { fg = c.red, bold = true }
                     hl.Folded = { fg = c.blue, bg = "" }
+                    hl.HackedPortalNC = { fg = c.terminal_black, bg = c.blue7 }
+                    hl.HackedPortal = { fg = c.terminal_black, bg = c.green }
+                    hl.HackedPortalEdgeNC = { fg = c.blue7 }
+                    hl.HackedPortalEdge = { fg = c.green }
                 end,
             })
 
